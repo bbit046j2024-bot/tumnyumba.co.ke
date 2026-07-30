@@ -1,0 +1,302 @@
+// TUM Nyumba — Prisma Schema (MySQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  STUDENT
+  PARTNER
+  ADMIN
+}
+
+enum PartnerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum PropertyCategory {
+  SINGLE_ROOM
+  BEDSITTER
+  STUDIO
+  ONE_BED
+  TWO_BED
+  HOSTEL
+  SHARED_ROOM
+  BNB
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  TAKEN
+  PAUSED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum LeadStatus {
+  PENDING
+  CONTACTED
+  BOOKED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  OVERDUE
+}
+
+enum FundingType {
+  HELB
+  SELF
+  PARENT
+  WORKING
+}
+
+// ─── MODELS ───────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?  @unique
+  password  String
+  role      Role     @default(STUDENT)
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentProfile  StudentProfile?
+  partnerProfile  PartnerProfile?
+  leads           Lead[]           @relation("StudentLeads")
+  savedProperties SavedProperty[]
+  sentMessages    Message[]        @relation("SentMessages")
+  conversations   ConversationParticipant[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id          String      @id @default(cuid())
+  userId      String      @unique
+  course      String?
+  yearOfStudy Int?
+  fundingType FundingType @default(SELF)
+  createdAt   DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+model PartnerProfile {
+  id                String        @id @default(cuid())
+  userId            String        @unique
+  companyName       String
+  licenseNumber     String?
+  businessPermitUrl String?       @db.Text
+  status            PartnerStatus @default(PENDING)
+  totalLeadsPaid    Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  properties Property[]
+  invoices   Invoice[]
+
+  @@map("partner_profiles")
+}
+
+model Property {
+  id                 String             @id @default(cuid())
+  partnerId          String
+  title              String
+  category           PropertyCategory
+  county             String
+  subcounty          String
+  area               String
+  latitude           Float?
+  longitude          Float?
+  mapUrl             String?            @db.Text
+  rent               Int
+  deposit            Int
+  description        String             @db.Text
+  availabilityStatus AvailabilityStatus @default(AVAILABLE)
+  verificationStatus VerificationStatus @default(PENDING)
+  autoRelist         Boolean            @default(false)
+  views              Int                @default(0)
+  featured           Boolean            @default(false)
+
+  // Amenities
+  wifi        Boolean @default(false)
+  water       Boolean @default(false)
+  electricity Boolean @default(false)
+  parking     Boolean @default(false)
+  security    Boolean @default(false)
+
+  images    PropertyImage[]
+  leads     Lead[]
+  savedBy   SavedProperty[]
+
+  partner   PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("properties")
+}
+
+model PropertyImage {
+  id         String   @id @default(cuid())
+  propertyId String
+  url        String   @db.Text
+  publicId   String
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_images")
+}
+
+model SavedProperty {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+  @@map("saved_properties")
+}
+
+model Lead {
+  id         String     @id @default(cuid())
+  propertyId String
+  studentId  String
+  status     LeadStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  student  User     @relation("StudentLeads", fields: [studentId], references: [id], onDelete: Cascade)
+  leadFee  LeadFee?
+
+  @@unique([propertyId, studentId])
+  @@map("leads")
+}
+
+model LeadFee {
+  id        String   @id @default(cuid())
+  leadId    String   @unique
+  partnerId String
+  amount    Int      @default(50)
+  paid      Boolean  @default(false)
+  invoiceId String?
+
+  lead    Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("lead_fees")
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  partnerId   String
+  periodStart DateTime
+  periodEnd   DateTime
+  totalLeads  Int           @default(0)
+  totalAmount Int           @default(0)
+  status      InvoiceStatus @default(UNPAID)
+  dueDate     DateTime
+
+  partner  PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  leadFees LeadFee[]
+  payment  Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("invoices")
+}
+
+model Payment {
+  id             String   @id @default(cuid())
+  invoiceId      String   @unique
+  amount         Int
+  method         String   @default("MPESA")
+  transactionRef String?
+  paidAt         DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String   @db.Text
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String   @id @default(cuid())
+  conversationId String
+  userId         String
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  body           String    @db.Text
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
