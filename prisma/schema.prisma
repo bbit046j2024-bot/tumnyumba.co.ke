@@ -157,6 +157,15 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // ── Indexes for public listing search ──────────────────────────────────────
+  // Composite index covering the two hard WHERE filters on every public query
+  @@index([verificationStatus, availabilityStatus, featured])
+  // Search filter columns — individual indexes used by the query planner
+  // when only a subset of filters are active
+  @@index([area])
+  @@index([category])
+  @@index([rent])
+  @@index([partnerId])
   @@map("properties")
 }
 
@@ -260,6 +269,8 @@ model Notification {
   link      String?
   createdAt DateTime @default(now())
 
+  // Fetched per-user on every page load — must be indexed
+  @@index([userId, createdAt(sort: Desc)])
   @@map("notifications")
 }
 
@@ -298,5 +309,7 @@ model Message {
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender       User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
+  // Fetched per-conversation thread, ordered by time — composite index is essential
+  @@index([conversationId, createdAt(sort: Asc)])
   @@map("messages")
 }

@@ -22,7 +22,7 @@ interface Property {
   security: boolean;
 }
 
-const areas = ["All Areas", "Tononoka", "Buxton", "Mikindani", "Maweni", "Mtomondoni", "Majengo", "Nyali"];
+const areas = ["All Areas", "Tudor", "TUM", "Tononoka", "Buxton", "Mikindani", "Maweni", "Mtomondoni", "Magongo", "Majengo", "Nyali"];
 const roomTypes = ["Any", "SINGLE_ROOM", "BEDSITTER", "STUDIO", "ONE_BED", "TWO_BED", "SHARED_ROOM", "HOSTEL", "BNB"];
 const roomTypeLabels: Record<string, string> = {
   Any: "Any",

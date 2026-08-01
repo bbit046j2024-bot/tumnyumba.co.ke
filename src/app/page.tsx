@@ -12,7 +12,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PropertyCard from "@/components/listings/PropertyCard";
 
-const areas = ["All Areas", "Tononoka", "Buxton", "Mikindani", "Maweni", "Mtomondoni", "Magongo", "Majengo", "Nyali"];
+const areas = ["All Areas", "Tudor", "TUM", "Tononoka", "Buxton", "Mikindani", "Maweni", "Mtomondoni", "Magongo", "Majengo", "Nyali"];
 const priceRanges = [
   "Any Price",
   "Under KSh 3,000",

@@ -48,7 +48,14 @@ export async function GET(req: NextRequest) {
       ...(limit && { take: parseInt(limit) }),
     });
 
-    return NextResponse.json(properties);
+    return NextResponse.json(properties, {
+      headers: {
+        // Allow CDN / edge networks to cache public listings for 30 seconds.
+        // After expiry the cache serves stale data while a background revalidation
+        // runs — so users never wait for a cold DB query.
+        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+      },
+    });
   } catch (error) {
     console.error("[GET /api/properties]", error);
     return NextResponse.json(
