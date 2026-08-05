@@ -4,9 +4,15 @@ import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    let session = null;
+    try {
+      session = await auth();
+    } catch (authErr) {
+      console.warn("[POST /api/upload] Auth error:", authErr);
+    }
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized. Please log in to upload images." }, { status: 401 });
     }
 
     const formData = await req.formData();
@@ -24,7 +30,7 @@ export async function POST(req: NextRequest) {
         cloudinary.uploader
           .upload_stream(
             {
-              folder: "tum-nyumba/properties",
+              folder: "campuskey/properties",
               resource_type: "image",
             },
             (error, uploadResult) => {
@@ -40,8 +46,10 @@ export async function POST(req: NextRequest) {
       url: result.secure_url,
       publicId: result.public_id,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[POST /api/upload]", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    const errorDetails = error?.message || (typeof error === "string" ? error : "Upload failed");
+    return NextResponse.json({ error: `Upload error: ${errorDetails}` }, { status: 500 });
   }
 }
+

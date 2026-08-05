@@ -70,7 +70,7 @@ export default function AddPropertyPage() {
           const preview = URL.createObjectURL(file);
           setImages((prev) => [...prev, { url: data.url, publicId: data.publicId, preview }]);
         } else {
-          setError("Image upload failed. Please try again.");
+          setError(data.error || "Image upload failed. Please try again.");
         }
       } catch {
         setError("Upload error. Check your connection and try again.");
