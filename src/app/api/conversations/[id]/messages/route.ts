@@ -81,6 +81,37 @@ export async function POST(
       data: { updatedAt: new Date() },
     });
 
+    // Notify other participants in the conversation (including Admin if present)
+    try {
+      const otherParticipants = await prisma.conversationParticipant.findMany({
+        where: {
+          conversationId,
+          userId: { not: session.user.id },
+        },
+        include: {
+          user: { select: { id: true, role: true } },
+        },
+      });
+
+      if (otherParticipants.length > 0) {
+        const textSnippet = body.trim().length > 50 ? body.trim().slice(0, 50) + "..." : body.trim();
+        await prisma.notification.createMany({
+          data: otherParticipants.map((p) => ({
+            userId: p.user.id,
+            title: `New Message from ${session.user.name || "User"}`,
+            body: `${session.user.name || "Someone"}: "${textSnippet}"`,
+            link: p.user.role === "ADMIN" ? "/admin/chat" : p.user.role === "PARTNER" ? "/partner/chat" : "/admin/chat",
+          })),
+        });
+
+        // Invalidate recipient notification caches
+        const { cacheDelete } = await import("@/lib/cache");
+        otherParticipants.forEach((p) => cacheDelete(`notifications:${p.user.id}`));
+      }
+    } catch (notifErr) {
+      console.warn("[Message Notification Warning]", notifErr);
+    }
+
     // Trigger real-time event on Pusher channel
     try {
       await pusherServer.trigger(

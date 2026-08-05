@@ -94,6 +94,30 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Notify all admins about the new property submission
+    try {
+      const admins = await prisma.user.findMany({
+        where: { role: "ADMIN" },
+        select: { id: true },
+      });
+
+      if (admins.length > 0) {
+        await prisma.notification.createMany({
+          data: admins.map((admin) => ({
+            userId: admin.id,
+            title: "New Property Listed",
+            body: `Partner ${partner.companyName} listed "${body.title}" in ${body.area}. Pending verification.`,
+            link: "/admin/properties",
+          })),
+        });
+
+        const { cacheDelete } = await import("@/lib/cache");
+        admins.forEach((admin) => cacheDelete(`notifications:${admin.id}`));
+      }
+    } catch (notifErr) {
+      console.warn("[Property Admin Notification Warning]", notifErr);
+    }
+
     return NextResponse.json(property, { status: 201 });
   } catch (error) {
     console.error("[POST /api/partner/properties]", error);

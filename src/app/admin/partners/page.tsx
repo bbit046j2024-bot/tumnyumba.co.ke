@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Building2, Mail, Phone, CheckCircle, Ban, Loader2, RefreshCw, Clock } from "lucide-react";
+import { Search, Building2, Mail, Phone, CheckCircle, Ban, Loader2, RefreshCw, Clock, Trash2 } from "lucide-react";
 
 interface Partner {
   id: string;
@@ -62,6 +62,24 @@ export default function AdminPartnersPage() {
       if (res.ok) {
         setPartners((prev) => prev.map((p) => p.id === id ? { ...p, status } : p));
       }
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const deletePartner = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to permanently delete partner "${name}"? This action cannot be undone and will delete all their listings.`)) return;
+
+    setActionLoading(id + "DELETE");
+    try {
+      const res = await fetch(`/api/admin/partners/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setPartners((prev) => prev.filter((p) => p.id !== id));
+      } else {
+        alert("Failed to delete partner account.");
+      }
+    } catch {
+      alert("Error connecting to server.");
     } finally {
       setActionLoading(null);
     }
@@ -202,6 +220,18 @@ export default function AdminPartnersPage() {
                               <Clock className="w-4 h-4" />
                             </button>
                           )}
+                          <button
+                            onClick={() => deletePartner(p.id, p.companyName)}
+                            disabled={!!busy}
+                            title="Delete Partner Account"
+                            className="p-1.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors disabled:opacity-50 ml-1"
+                          >
+                            {busy && actionLoading === p.id + "DELETE" ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
                         </div>
                       </td>
                     </tr>

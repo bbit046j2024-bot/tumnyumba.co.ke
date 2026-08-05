@@ -38,10 +38,24 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await prisma.partnerProfile.delete({ where: { id } });
+
+    const partner = await prisma.partnerProfile.findUnique({
+      where: { id },
+      select: { userId: true },
+    });
+
+    if (!partner) {
+      return NextResponse.json({ error: "Partner profile not found" }, { status: 404 });
+    }
+
+    // Deleting user cascades to PartnerProfile, properties, images, leads, etc.
+    await prisma.user.delete({
+      where: { id: partner.userId },
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("[DELETE /api/admin/partners/[id]]", error);
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to delete partner account" }, { status: 500 });
   }
 }
