@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cacheGet, cacheSet } from "@/lib/cache";
+
+const STATS_TTL = 30; // seconds
 
 export async function GET() {
   try {
@@ -8,6 +11,10 @@ export async function GET() {
     if (!session?.user?.id || session.user.role !== "PARTNER") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const cacheKey = `partner-stats:${session.user.id}`;
+    const cached = cacheGet<object>(cacheKey);
+    if (cached) return NextResponse.json(cached);
 
     const partner = await prisma.partnerProfile.findUnique({
       where: { userId: session.user.id },
@@ -35,7 +42,9 @@ export async function GET() {
       }),
     ]);
 
-    return NextResponse.json({ total, available, taken, recentLeads });
+    const data = { total, available, taken, recentLeads };
+    cacheSet(cacheKey, data, STATS_TTL);
+    return NextResponse.json(data);
   } catch (error) {
     console.error("[GET /api/partner/stats]", error);
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });

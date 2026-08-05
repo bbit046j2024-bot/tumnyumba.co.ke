@@ -4,7 +4,11 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding TUM Nyumba database...");
+  if (process.env.NODE_ENV === "production") {
+    console.warn("⚠️ Refusing to seed database in production environment.");
+    return;
+  }
+  console.log("🌱 Seeding CampusKey Mombasa database...");
 
   const adminPassword = await bcrypt.hash("Admin@123456", 10);
   const partnerPassword = await bcrypt.hash("Partner@123456", 10);

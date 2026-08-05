@@ -39,9 +39,9 @@ export default function PartnerSidebar() {
         {!collapsed && (
           <div>
             <div className="font-poppins font-bold text-white text-base leading-tight">
-              TUM<span className="text-[#3CB474]"> Nyumba</span>
+              Campus<span className="text-[#3CB474]">Key</span>
             </div>
-            <div className="text-[11px] text-emerald-200/80 font-medium">Find. Live. Belong</div>
+            <div className="text-[11px] text-emerald-200/80 font-medium">Mombasa · Find. Live. Belong</div>
           </div>
         )}
       </div>

@@ -57,7 +57,7 @@ export default function AdminRegisterPage() {
               <Home className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
-              <div className="font-poppins font-bold text-2xl text-white">TUM<span className="text-yellow-300">Nyumba</span></div>
+              <div className="font-poppins font-bold text-2xl text-white">Campus<span className="text-yellow-300">Key</span></div>
               <div className="text-xs text-primary-200">Admin Account Setup</div>
             </div>
           </Link>
@@ -70,7 +70,7 @@ export default function AdminRegisterPage() {
             </div>
             <div>
               <h1 className="font-poppins font-bold text-xl text-gray-900">Create Admin Account</h1>
-              <p className="text-gray-500 text-xs">For authorized TUM Nyumba administrators</p>
+              <p className="text-gray-500 text-xs">For authorized CampusKey Mombasa administrators</p>
             </div>
           </div>
 
@@ -103,7 +103,7 @@ export default function AdminRegisterPage() {
                 <input
                   type="email"
                   className="input pl-11"
-                  placeholder="admin@tumnyumba.co.ke"
+                  placeholder="admin@campuskey.co.ke"
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
                   required
@@ -132,7 +132,7 @@ export default function AdminRegisterPage() {
                 <input
                   type="password"
                   className="input pl-11"
-                  placeholder="Secret key (default: tum-admin-secret-2026)"
+                  placeholder="Enter admin secret key"
                   value={form.secretKey}
                   onChange={(e) => update("secretKey", e.target.value)}
                   required

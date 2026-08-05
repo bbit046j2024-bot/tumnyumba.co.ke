@@ -9,7 +9,7 @@ export default function AboutPage() {
 
       <section className="bg-hero-gradient pt-32 pb-20 text-white text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">About TUM Nyumba</h1>
+          <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">About CampusKey Mombasa</h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto">
             Eliminating student housing stress through technology, verification, and trusted local partnerships.
           </p>
@@ -20,10 +20,10 @@ export default function AboutPage() {
         <div className="card p-8 sm:p-12">
           <h2 className="font-poppins font-bold text-2xl text-gray-900 mb-4">Our Mission</h2>
           <p className="text-gray-600 text-base leading-relaxed mb-6">
-            TUM Nyumba was founded to solve a major challenge faced by thousands of Technical University of Mombasa (TUM) students every academic year: finding safe, affordable, and authentic off-campus rental housing.
+            CampusKey Mombasa was founded to solve a major challenge faced by thousands of students in Mombasa every academic year: finding safe, affordable, and authentic off-campus rental housing.
           </p>
           <p className="text-gray-600 text-base leading-relaxed">
-            By building a two-sided verified marketplace in direct partnership with TUM Student Affairs and local Mombasa property firms, we eliminate house-hunting scams, bogus agent fees, and endless door-to-door searching.
+            By building a two-sided verified marketplace in partnership with local Mombasa property firms and student communities, we eliminate house-hunting scams, bogus agent fees, and endless door-to-door searching.
           </p>
         </div>
 
@@ -48,8 +48,8 @@ export default function AboutPage() {
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4 text-emerald-700">
               <Award className="w-6 h-6" />
             </div>
-            <h3 className="font-poppins font-bold text-lg text-gray-900 mb-2">TUM Partnership</h3>
-            <p className="text-gray-500 text-sm">Backed by contractual alignment with university administration for student welfare.</p>
+            <h3 className="font-poppins font-bold text-lg text-gray-900 mb-2">Campus Partnership</h3>
+            <p className="text-gray-500 text-sm">Backed by partnerships with local universities and student welfare organisations in Mombasa.</p>
           </div>
         </div>
       </section>

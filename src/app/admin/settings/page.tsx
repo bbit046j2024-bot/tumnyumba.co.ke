@@ -5,7 +5,7 @@ import { Settings, Save, Shield, CreditCard, Bell, Key } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [leadFee, setLeadFee] = useState("50");
-  const [supportEmail, setSupportEmail] = useState("support@tumnyumba.co.ke");
+  const [supportEmail, setSupportEmail] = useState("support@campuskey.co.ke");
   const [mpesaPaybill, setMpesaPaybill] = useState("400200");
   const [saved, setSaved] = useState(false);
 

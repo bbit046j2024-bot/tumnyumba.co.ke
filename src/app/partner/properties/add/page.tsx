@@ -125,7 +125,7 @@ export default function AddPropertyPage() {
         </Link>
         <div>
           <h1 className="page-title">Add New Property</h1>
-          <p className="page-subtitle">Submit a verified listing to reach TUM students</p>
+          <p className="page-subtitle">Submit a verified listing to reach Mombasa students</p>
         </div>
       </div>
 

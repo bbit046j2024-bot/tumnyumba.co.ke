@@ -133,7 +133,7 @@ export default function AdminPropertiesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="page-title">Property Listings Management</h1>
-          <p className="page-subtitle">Verify, review, and manage all student rentals listed across TUM Nyumba.</p>
+          <p className="page-subtitle">Verify, review, and manage all student rentals listed across CampusKey Mombasa.</p>
         </div>
         <button
           onClick={fetchProperties}

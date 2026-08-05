@@ -8,7 +8,7 @@ export default function PartnerProfilePage() {
     <div className="space-y-6 max-w-4xl animate-fade-in">
       <div>
         <h1 className="page-title">Company Profile</h1>
-        <p className="page-subtitle">Your verified business details and housing agency identity on TUM Nyumba.</p>
+        <p className="page-subtitle">Your verified business details and housing agency identity on CampusKey Mombasa.</p>
       </div>
 
       <div className="card p-6 space-y-6">

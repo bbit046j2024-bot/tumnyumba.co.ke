@@ -43,7 +43,7 @@ export default function PartnerRegisterPage() {
               <Home className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
-              <div className="font-poppins font-bold text-2xl text-white">TUM<span className="text-yellow-300">Nyumba</span></div>
+              <div className="font-poppins font-bold text-2xl text-white">Campus<span className="text-yellow-300">Key</span></div>
               <div className="text-xs text-primary-200">Partner Registration</div>
             </div>
           </Link>
@@ -56,7 +56,7 @@ export default function PartnerRegisterPage() {
             </div>
             <div>
               <h1 className="font-poppins font-bold text-xl text-gray-900">Partner Registration</h1>
-              <p className="text-gray-500 text-xs">List properties & reach TUM students</p>
+              <p className="text-gray-500 text-xs">List properties & reach Mombasa students</p>
             </div>
           </div>
 
@@ -142,7 +142,7 @@ export default function PartnerRegisterPage() {
             </div>
 
             <div className="bg-primary-50 rounded-xl p-3 text-xs text-gray-600">
-              <strong className="text-primary-700">Note:</strong> Your account will be reviewed by the TUM Nyumba admin team within 24–48 hours before activation.
+              <strong className="text-primary-700">Note:</strong> Your account will be reviewed by the CampusKey Mombasa admin team within 24–48 hours before activation.
             </div>
 
             <button type="submit" className="btn-primary w-full py-3.5" disabled={loading}>

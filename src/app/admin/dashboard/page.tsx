@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
       <div>
         <h1 className="page-title">Dashboard</h1>
         <p className="page-subtitle">
-          Welcome back, Admin 👋 Here&apos;s what&apos;s happening across TUM Nyumba today.
+          Welcome back, Admin 👋 Here&apos;s what&apos;s happening across CampusKey Mombasa today.
         </p>
       </div>
 

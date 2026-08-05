@@ -111,8 +111,8 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2.5">
                 <Mail className="w-4 h-4 text-[#3CB474] mt-0.5 flex-shrink-0" />
-                <a href="mailto:hello@tumnyumba.co.ke" className="text-sm text-gray-300 hover:text-white transition-colors">
-                  hello@tumnyumba.co.ke
+                <a href="mailto:hello@campuskey.co.ke" className="text-sm text-gray-300 hover:text-white transition-colors">
+                  hello@campuskey.co.ke
                 </a>
               </li>
               <li className="flex items-start gap-2.5">

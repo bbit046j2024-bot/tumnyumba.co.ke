@@ -7,7 +7,7 @@ import { Home, User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckC
 
 export default function StudentRegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "", course: "", yearOfStudy: "1" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "" });
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,6 +16,7 @@ export default function StudentRegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.phone.trim()) { setError("Phone number is required"); return; }
     if (form.password !== form.confirmPassword) { setError("Passwords do not match"); return; }
     if (form.password.length < 8) { setError("Password must be at least 8 characters"); return; }
 
@@ -47,7 +48,7 @@ export default function StudentRegisterPage() {
               <Home className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
-              <div className="font-poppins font-bold text-2xl text-white">TUM<span className="text-yellow-300">Nyumba</span></div>
+              <div className="font-poppins font-bold text-2xl text-white">Campus<span className="text-yellow-300">Key</span></div>
               <div className="text-xs text-primary-200">Find. Live. Belong.</div>
             </div>
           </Link>
@@ -55,7 +56,7 @@ export default function StudentRegisterPage() {
 
         <div className="card p-8 shadow-2xl animate-fade-in">
           <h1 className="font-poppins font-bold text-2xl text-gray-900 mb-1">Create Student Account</h1>
-          <p className="text-gray-500 text-sm mb-7">Start finding verified student housing near TUM</p>
+          <p className="text-gray-500 text-sm mb-7">Start finding verified student housing in Mombasa</p>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-5">
@@ -64,41 +65,27 @@ export default function StudentRegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="input-label">Full Name</label>
-                <div className="relative flex items-center">
-                  <User className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
-                  <input type="text" className="input pl-11" placeholder="John Ochieng" value={form.name} onChange={(e) => update("name", e.target.value)} required />
-                </div>
-              </div>
-              <div>
-                <label className="input-label">Phone Number</label>
-                <div className="relative flex items-center">
-                  <Phone className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
-                  <input type="tel" className="input pl-11" placeholder="0712 345 678" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
-                </div>
+            <div>
+              <label className="input-label">Full Name</label>
+              <div className="relative flex items-center">
+                <User className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
+                <input type="text" className="input pl-11" placeholder="John Ochieng" value={form.name} onChange={(e) => update("name", e.target.value)} required />
               </div>
             </div>
 
             <div>
-              <label className="input-label">TUM Email Address</label>
+              <label className="input-label">Phone Number</label>
               <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
-                <input type="email" className="input pl-11" placeholder="john@tum.ac.ke" value={form.email} onChange={(e) => update("email", e.target.value)} required />
+                <Phone className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
+                <input type="tel" className="input pl-11" placeholder="0712 345 678" value={form.phone} onChange={(e) => update("phone", e.target.value)} required />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="input-label">Course / Programme</label>
-                <input type="text" className="input" placeholder="e.g. BSc. Computer Science" value={form.course} onChange={(e) => update("course", e.target.value)} />
-              </div>
-              <div>
-                <label className="input-label">Year of Study</label>
-                <select className="select" value={form.yearOfStudy} onChange={(e) => update("yearOfStudy", e.target.value)}>
-                  {[1, 2, 3, 4, 5].map((y) => <option key={y} value={y}>Year {y}</option>)}
-                </select>
+            <div>
+              <label className="input-label">Email Address</label>
+              <div className="relative flex items-center">
+                <Mail className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
+                <input type="email" className="input pl-11" placeholder="you@example.com" value={form.email} onChange={(e) => update("email", e.target.value)} required />
               </div>
             </div>
 

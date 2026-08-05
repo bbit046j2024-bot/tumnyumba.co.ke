@@ -11,7 +11,7 @@ export default function ContactPage() {
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">Contact Us</h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto">
-            Have questions or need support? We&apos;re here to help TUM students and property partners.
+            Have questions or need support? We&apos;re here to help students and property partners.
           </p>
         </div>
       </section>
@@ -36,8 +36,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-poppins font-bold text-gray-900">Email Us</h3>
-                <a href="mailto:hello@tumnyumba.co.ke" className="text-sm text-primary-700 hover:underline mt-1 block">
-                  hello@tumnyumba.co.ke
+                <a href="mailto:hello@campuskey.co.ke" className="text-sm text-primary-700 hover:underline mt-1 block">
+                  hello@campuskey.co.ke
                 </a>
               </div>
             </div>

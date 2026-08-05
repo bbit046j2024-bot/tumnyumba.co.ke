@@ -45,7 +45,7 @@ export default function AdminStudentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="page-title">Student Management</h1>
-          <p className="page-subtitle">View all registered students on TUM Nyumba.</p>
+          <p className="page-subtitle">View all registered students on CampusKey Mombasa.</p>
         </div>
         <button onClick={fetchStudents} className="btn-secondary flex items-center gap-2 text-sm self-start">
           <RefreshCw className="w-4 h-4" /> Refresh

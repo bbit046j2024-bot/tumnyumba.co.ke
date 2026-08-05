@@ -52,19 +52,16 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 group">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center group-hover:bg-white/20 transition-colors">
-              <Home className="w-6 h-6 text-white" />
-            </div>
             <div className="text-left">
-              <div className="font-poppins font-bold text-2xl text-white">TUM<span className="text-yellow-300">Nyumba</span></div>
-              <div className="text-xs text-primary-200">Find. Live. Belong.</div>
+              <div className="font-poppins font-bold text-2xl text-white">Campus<span className="text-yellow-300">Key</span></div>
+              <div className="text-xs text-primary-200">Mombasa · Find. Live. Belong.</div>
             </div>
           </Link>
         </div>
 
         <div className="card p-8 shadow-2xl animate-fade-in">
           <h1 className="font-poppins font-bold text-2xl text-gray-900 mb-1">Welcome back</h1>
-          <p className="text-gray-500 text-sm mb-7">Sign in to your TUM Nyumba account</p>
+          <p className="text-gray-500 text-sm mb-7">Sign in to your CampusKey Mombasa account</p>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
@@ -144,7 +141,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-primary-200 mt-6">
-          © {new Date().getFullYear()} TUM Nyumba · In partnership with TUM
+          © {new Date().getFullYear()} CampusKey Mombasa · Trusted Student Housing
         </p>
       </div>
     </div>

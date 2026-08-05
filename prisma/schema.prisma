@@ -181,6 +181,8 @@ model PropertyImage {
 
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
+  // propertyId — queried on every property detail page load
+  @@index([propertyId])
   @@map("property_images")
 }
 
@@ -194,6 +196,8 @@ model SavedProperty {
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@unique([userId, propertyId])
+  // userId — queried every time a student opens their saved listings page
+  @@index([userId])
   @@map("saved_properties")
 }
 
@@ -210,6 +214,10 @@ model Lead {
   leadFee  LeadFee?
 
   @@unique([propertyId, studentId])
+  // studentId — queried on every student dashboard/leads page
+  @@index([studentId])
+  // propertyId — queried by partner when viewing leads per property
+  @@index([propertyId])
   @@map("leads")
 }
 
@@ -226,6 +234,8 @@ model LeadFee {
 
   createdAt DateTime @default(now())
 
+  // partnerId — queried during invoice generation to sum fees per partner
+  @@index([partnerId])
   @@map("lead_fees")
 }
 
@@ -246,6 +256,8 @@ model Invoice {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // partnerId — queried on every partner billing/invoice page
+  @@index([partnerId])
   @@map("invoices")
 }
 
@@ -297,6 +309,8 @@ model ConversationParticipant {
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
+  // userId — chat list query finds all conversations for current user
+  @@index([userId])
   @@map("conversation_participants")
 }
 

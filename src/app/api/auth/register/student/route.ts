@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, password, course, yearOfStudy } = await req.json();
+    const { name, email, phone, password } = await req.json();
 
-    if (!name || !email || !password) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!name || !email || !phone || !password) {
+      return NextResponse.json({ error: "Name, email, phone number, and password are all required." }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findFirst({
@@ -28,10 +28,7 @@ export async function POST(req: Request) {
         password: hashedPassword,
         role: "STUDENT",
         studentProfile: {
-          create: {
-            course,
-            yearOfStudy: parseInt(yearOfStudy) || 1,
-          },
+          create: {},
         },
       },
     });

@@ -89,7 +89,7 @@ export default function AdminRevenuePage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `tum-nyumba-revenue-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `campuskey-revenue-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -143,7 +143,7 @@ export default function ListingDetailPage() {
 
   const whatsappNumber = property.partner.user.phone?.replace(/\D/g, "") || "";
   const whatsappMsg = encodeURIComponent(
-    `Hi ${property.partner.user.name}, I am interested in your listing: ${property.title} on TUM Nyumba.`
+    `Hi ${property.partner.user.name}, I am interested in your listing: ${property.title} on CampusKey Mombasa.`
   );
 
   return (
@@ -290,10 +290,10 @@ export default function ListingDetailPage() {
             <div className="p-5 bg-gradient-to-r from-emerald-900 to-primary-900 rounded-2xl text-white space-y-2">
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-yellow-400" />
-                <h3 className="font-poppins font-semibold text-base text-yellow-400">TUM Nyumba Verification Guarantee</h3>
+                <h3 className="font-poppins font-semibold text-base text-yellow-400">CampusKey Mombasa Verification Guarantee</h3>
               </div>
               <p className="text-xs text-primary-100 leading-relaxed">
-                This property has been physically inspected by our field team. Never send money to anyone outside the TUM Nyumba platform.
+                This property has been physically inspected by our field team. Never send money to anyone outside the CampusKey Mombasa platform.
               </p>
             </div>
           </div>

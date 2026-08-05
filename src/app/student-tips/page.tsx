@@ -105,7 +105,7 @@ export default function StudentTipsPage() {
             </div>
             <div>
               <h3 className="font-poppins font-bold text-lg">Warning: Common Rental Red Flags</h3>
-              <p className="text-xs text-red-600 font-medium">If you spot any of these, stop and report to TUM Nyumba Support immediately.</p>
+              <p className="text-xs text-red-600 font-medium">If you spot any of these, stop and report to CampusKey Mombasa Support immediately.</p>
             </div>
           </div>
           <ul className="space-y-2.5 pt-2">
@@ -124,7 +124,7 @@ export default function StudentTipsPage() {
           <div className="space-y-1">
             <h3 className="font-poppins font-bold text-xl">Ready to Find Your Dream Student Room?</h3>
             <p className="text-primary-200 text-xs sm:text-sm max-w-md mx-auto">
-              All properties listed on TUM Nyumba are physically verified to keep you safe from scams.
+              All properties listed on CampusKey Mombasa are physically verified to keep you safe from scams.
             </p>
           </div>
           <div className="pt-2">

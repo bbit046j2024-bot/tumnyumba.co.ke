@@ -15,10 +15,10 @@ export default function ForPartnersPage() {
             For Estate Agents & Property Owners
           </span>
           <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">
-            Fill Your Units Faster with TUM Students
+            Fill Your Units Faster with Mombasa Students
           </h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto mb-8">
-            List your rental properties on TUM Nyumba and connect directly with thousands of verified student tenants every semester.
+            List your rental properties on CampusKey Mombasa and connect directly with thousands of verified student tenants every semester.
           </p>
           <Link href="/auth/register/partner" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-700 font-bold rounded-xl hover:bg-primary-50 transition-all font-poppins shadow-lg">
             Register as Partner <ArrowRight className="w-5 h-5" />
@@ -29,7 +29,7 @@ export default function ForPartnersPage() {
       {/* Why Partner With Us */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
-          <h2 className="font-poppins font-bold text-3xl text-gray-900">Why Partner With TUM Nyumba?</h2>
+          <h2 className="font-poppins font-bold text-3xl text-gray-900">Why Partner With CampusKey Mombasa?</h2>
           <p className="text-gray-500 mt-2">Transparent pricing, high tenant demand, and official support</p>
         </div>
 

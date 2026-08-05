@@ -34,7 +34,7 @@ const partnerSteps = [
   {
     step: "2",
     title: "Admin Verification",
-    desc: "TUM Nyumba team verifies your business permit and physical properties to ensure trust.",
+    desc: "CampusKey Mombasa team verifies your business permit and physical properties to ensure trust.",
     icon: ShieldCheck,
   },
   {
@@ -53,9 +53,9 @@ export default function HowItWorksPage() {
       {/* Header */}
       <section className="bg-hero-gradient pt-32 pb-20 text-white text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">How TUM Nyumba Works</h1>
+          <h1 className="font-poppins font-bold text-4xl sm:text-5xl mb-4">How CampusKey Mombasa Works</h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto">
-            A simple, safe, and transparent marketplace connecting TUM students to verified rentals near campus.
+            A simple, safe, and transparent marketplace connecting students to verified rentals in Mombasa.
           </p>
         </div>
       </section>

@@ -79,7 +79,7 @@ export default function AdminPartnersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="page-title">Partner Management</h1>
-          <p className="page-subtitle">Manage all property partners registered on TUM Nyumba.</p>
+          <p className="page-subtitle">Manage all property partners registered on CampusKey Mombasa.</p>
         </div>
         <button onClick={fetchPartners} className="btn-secondary flex items-center gap-2 text-sm self-start">
           <RefreshCw className="w-4 h-4" /> Refresh

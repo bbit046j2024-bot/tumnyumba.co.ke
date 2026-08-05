@@ -37,7 +37,7 @@ export default function AdminTopbar({ user }: AdminTopbarProps) {
           </div>
           <div className="hidden sm:block text-left">
             <div className="text-sm font-semibold text-[#1F2937] font-poppins leading-tight">{user?.name || "Super Admin"}</div>
-            <div className="text-xs text-[#8A94A6] font-inter">{user?.email || "admin@tumnyumba.co.ke"}</div>
+            <div className="text-xs text-[#8A94A6] font-inter">{user?.email || "admin@campuskey.co.ke"}</div>
           </div>
           <ChevronDown className="w-4 h-4 text-[#8A94A6] hidden sm:block" />
         </div>

@@ -197,7 +197,7 @@ export default function AdminChatPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Support & Messages</h1>
-          <p className="page-subtitle">Communicate with property partners and TUM students in real-time.</p>
+          <p className="page-subtitle">Communicate with property partners and students in real-time.</p>
         </div>
         <button
           onClick={() => setShowNewChatModal(true)}

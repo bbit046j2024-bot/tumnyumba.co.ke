@@ -17,32 +17,32 @@ const faqData: FAQItem[] = [
   {
     id: "1",
     category: "Getting Started",
-    question: "What is TUM Nyumba?",
-    answer: "TUM Nyumba is the official housing discovery platform designed specifically for Technical University of Mombasa (TUM) students. It connects students with physically verified landlords and partners offering safe, affordable, and quality rentals around campus (Tudor, Tononoka, Buxton, Kisauni, Mikindani, Nyali, etc.).",
+    question: "What is CampusKey Mombasa?",
+    answer: "CampusKey Mombasa is a trusted student housing discovery platform connecting students in Mombasa with physically verified landlords and partners offering safe, affordable, and quality rentals (Tudor, Tononoka, Buxton, Kisauni, Mikindani, Nyali, etc.).",
   },
   {
     id: "2",
     category: "Getting Started",
-    question: "Is TUM Nyumba free for students?",
-    answer: "Yes! Browsing houses, contacting verified landlords, viewing location details, and expressing interest in properties on TUM Nyumba is completely free for all TUM students.",
+    question: "Is CampusKey Mombasa free for students?",
+    answer: "Yes! Browsing houses, contacting verified landlords, viewing location details, and expressing interest in properties on CampusKey Mombasa is completely free for all students.",
   },
   {
     id: "3",
     category: "Safety & Verification",
-    question: "How are properties verified on TUM Nyumba?",
+    question: "How are properties verified on CampusKey Mombasa?",
     answer: "Our team physically visits each listed property to inspect security features (fencing, gates, night guards), verify water & electricity availability, confirm exact rent prices, and check the landlord's business permit and ownership documents before marking a property as VERIFIED.",
   },
   {
     id: "4",
     category: "Safety & Verification",
     question: "What should I do if a landlord asks for money before physical viewing?",
-    answer: "NEVER pay any 'viewing fee' or advance deposit before physically inspecting the property and meeting the landlord/partner in person. All genuine TUM Nyumba partners allow free physical viewings.",
+    answer: "NEVER pay any 'viewing fee' or advance deposit before physically inspecting the property and meeting the landlord/partner in person. All genuine CampusKey Mombasa partners allow free physical viewings.",
   },
   {
     id: "5",
     category: "House Hunting & Booking",
     question: "How do I express interest ('Take') in a house?",
-    answer: "When viewing a house on TUM Nyumba, click the 'I'm Interested / Contact Landlord' button. If you are signed in, your contact details will be shared directly with the landlord, and you can chat with them directly on the platform or call them.",
+    answer: "When viewing a house on CampusKey Mombasa, click the 'I'm Interested / Contact Landlord' button. If you are signed in, your contact details will be shared directly with the landlord, and you can chat with them directly on the platform or call them.",
   },
   {
     id: "6",
@@ -65,7 +65,7 @@ const faqData: FAQItem[] = [
   {
     id: "9",
     category: "Partners & Landlords",
-    question: "How can landlords list their properties on TUM Nyumba?",
+    question: "How can landlords list their properties on CampusKey Mombasa?",
     answer: "Landlords and property managers can click 'Partner With Us' in the menu, create a Partner Account, upload their business/national ID verification documents, and start listing student rentals once approved by the Admin team.",
   },
 ];
@@ -195,7 +195,7 @@ export default function FAQsPage() {
           <div className="space-y-1">
             <h3 className="font-poppins font-bold text-lg text-gray-900">Still Have Questions?</h3>
             <p className="text-gray-600 text-xs sm:text-sm max-w-md mx-auto">
-              Our TUM student support team is ready to assist you in finding your ideal campus home.
+              Our CampusKey Mombasa support team is ready to assist you in finding your ideal student home.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

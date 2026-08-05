@@ -197,7 +197,7 @@ export default function PartnerChatPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Partner Messaging</h1>
-          <p className="page-subtitle">Chat directly with prospective TUM students and system support admins.</p>
+          <p className="page-subtitle">Chat directly with prospective students and system support admins.</p>
         </div>
         <button
           onClick={() => setShowNewChatModal(true)}

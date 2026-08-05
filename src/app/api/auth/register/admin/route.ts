@@ -7,12 +7,11 @@ export async function POST(req: Request) {
   try {
     const { name, email, phone, password, secretKey } = await req.json();
 
-    // Verify admin registration secret key (configured in .env or default)
-    const ADMIN_SECRET = process.env.ADMIN_REGISTRATION_SECRET || "tum-admin-secret-2026";
-
-    if (secretKey !== ADMIN_SECRET) {
+    // Verify admin registration secret key (must be configured in .env)
+    const ADMIN_SECRET = process.env.ADMIN_REGISTRATION_SECRET;
+    if (!ADMIN_SECRET || secretKey !== ADMIN_SECRET) {
       return NextResponse.json(
-        { error: "Invalid Admin Registration Secret Key" },
+        { error: "Invalid or unconfigured Admin Registration Secret Key" },
         { status: 403 }
       );
     }
