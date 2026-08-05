@@ -40,7 +40,7 @@ export default function Footer() {
               </a>
               {/* WhatsApp */}
               <a
-                href="https://wa.me/254700123456"
+                href="https://chat.whatsapp.com/LhZ1amfYHL5Ln5ogBkoNnw"
                 className="w-9 h-9 bg-white/10 hover:bg-[#1F6B4A] rounded-lg flex items-center justify-center transition-colors"
                 title="WhatsApp"
               >
