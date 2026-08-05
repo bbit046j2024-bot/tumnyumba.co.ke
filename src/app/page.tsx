@@ -159,16 +159,16 @@ export default function HomePage() {
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 bg-[#E4F0E9] border border-[#1F6B4A]/20 rounded-full px-4 py-1.5 mb-6">
                 <Award className="w-4 h-4 text-[#1F6B4A]" />
-                <span className="text-xs text-[#1F6B4A] font-semibold uppercase tracking-wider">Official TUM Partner</span>
+                <span className="text-xs text-[#1F6B4A] font-semibold uppercase tracking-wider">CampusKey Mombasa</span>
               </div>
 
               <h1 className="font-poppins font-bold text-4xl sm:text-5xl lg:text-6xl text-[#1F2937] leading-[1.1] mb-6">
                 Find Verified <br className="hidden sm:inline" />
                 Student Housing <br />
-                <span className="text-[#1F6B4A]">Near TUM</span>
+                <span className="text-[#1F6B4A]">In Mombasa</span>
               </h1>
               <p className="text-base sm:text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
-                Safe. Affordable. Verified. We connect TUM students to trusted rentals near campus — no scams, no stress.
+                Safe. Affordable. Verified. Connecting students to trusted rentals across Mombasa — no scams, no stress.
               </p>
 
               {/* Search Bar */}
@@ -305,8 +305,8 @@ export default function HomePage() {
       <section className="bg-[#EAF3EC] py-20 mb-20 border-y border-[#1F6B4A]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-poppins font-bold text-3xl text-[#1F2937] mb-3">How TUM Nyumba Works</h2>
-            <p className="text-[#6B7280] max-w-xl mx-auto">Finding your ideal student home near TUM is now easier than ever.</p>
+            <h2 className="font-poppins font-bold text-3xl text-[#1F2937] mb-3">How CampusKey Works</h2>
+            <p className="text-[#6B7280] max-w-xl mx-auto">Finding your ideal student home in Mombasa is now easier than ever.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {howItWorks.map(({ step, title, desc, icon: Icon }) => (
@@ -340,7 +340,7 @@ export default function HomePage() {
                 List Your Property. Reach More Students.
               </h2>
               <p className="text-[#6B7280] max-w-xl text-sm leading-relaxed">
-                Join TUM Nyumba as a partner and connect with hundreds of students looking for verified housing every semester. Pay only KSh 50 per lead.
+                Join CampusKey Mombasa as a partner and connect with hundreds of students looking for verified housing every semester.
               </p>
             </div>
           </div>

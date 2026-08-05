@@ -2,31 +2,31 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TUM Nyumba — Find. Live. Belong.",
+  title: "CampusKey Mombasa — Find. Live. Belong.",
   description:
-    "The most trusted student housing platform for TUM Mombasa students. Find verified, affordable rentals near campus.",
-  keywords: ["TUM housing", "student housing Mombasa", "TUM Mombasa rentals", "verified student accommodation"],
+    "The most trusted student housing platform in Mombasa. Find verified, affordable rentals near campus.",
+  keywords: ["CampusKey", "CampusKey Mombasa", "student housing Mombasa", "Mombasa rentals", "verified student accommodation"],
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "TUM Nyumba — Find. Live. Belong.",
-    description: "Safe. Affordable. Verified. We connect TUM students to trusted rentals near campus.",
-    url: "https://tumnyumba.co.ke",
-    siteName: "TUM Nyumba",
+    title: "CampusKey Mombasa — Find. Live. Belong.",
+    description: "Safe. Affordable. Verified. Connecting students to trusted rentals near campus.",
+    url: "https://campuskey.co.ke",
+    siteName: "CampusKey Mombasa",
     images: [{ url: "/logo.png", width: 1200, height: 630 }],
     locale: "en_KE",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TUM Nyumba",
-    description: "Find verified student housing near TUM Mombasa",
+    title: "CampusKey Mombasa",
+    description: "Find verified student housing in Mombasa",
     images: ["/logo.png"],
   },
-  metadataBase: new URL("https://tumnyumba.co.ke"),
+  metadataBase: new URL("https://campuskey.co.ke"),
 };
 
 import AuthProvider from "@/components/providers/AuthProvider";

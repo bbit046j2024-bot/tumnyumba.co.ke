@@ -35,16 +35,21 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-[#1F6B4A] rounded-xl flex items-center justify-center shadow-xs group-hover:bg-[#175339] transition-colors">
-              <Home className="w-5 h-5 text-white" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="CampusKey Mombasa"
+              width={160}
+              height={44}
+              className="h-10 w-auto object-contain"
+              priority
+            />
             <div className="flex flex-col">
               <div className="flex items-center">
-                <span className="font-poppins font-bold text-xl text-[#1F2937]">TUM</span>
-                <span className="font-poppins font-bold text-xl text-[#1F6B4A] ml-1">Nyumba</span>
+                <span className="font-poppins font-bold text-xl text-[#1F2937]">Campus</span>
+                <span className="font-poppins font-bold text-xl text-[#1F6B4A] ml-0.5">Key</span>
               </div>
               <span className="text-[9px] font-bold tracking-widest text-[#1F6B4A] uppercase border-b border-[#1F6B4A]/40 pb-0.5 leading-none w-fit">
-                FIND. LIVE. BELONG.
+                MOMBASA
               </span>
             </div>
           </Link>

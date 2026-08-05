@@ -14,19 +14,20 @@ interface PropertyMapProps {
   area: string;
 }
 
-const TUM_LAT = -4.0435;
-const TUM_LNG = 39.6682;
+// Default fallback position (Mombasa city center) if no coordinates specified
+const DEFAULT_LAT = -4.0435;
+const DEFAULT_LNG = 39.6682;
 
 export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
 
-  const centerLat = lat ?? TUM_LAT;
-  const centerLng = lng ?? TUM_LNG;
+  const centerLat = lat ?? DEFAULT_LAT;
+  const centerLng = lng ?? DEFAULT_LNG;
   const hasExactLocation = !!(lat && lng);
 
   // Generate Google Maps Directions link if coordinates exist but no explicit mapUrl passed
-  const googleMapsDirectionsUrl = mapUrl || (lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(area + " Mombasa")}`);
+  const googleMapsDirectionsUrl = mapUrl || (lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(area)}`);
 
   useEffect(() => {
     if (typeof window === "undefined" || !mapRef.current) return;
@@ -47,7 +48,7 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
 
       const map = L.map(mapRef.current!, {
         center: [centerLat, centerLng],
-        zoom: hasExactLocation ? 16 : 14,
+        zoom: hasExactLocation ? 16 : 12,
         zoomControl: true,
         scrollWheelZoom: false,
       });
@@ -56,14 +57,6 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
       }).addTo(map);
-
-      // TUM campus reference pin
-      const tumIcon = L.divIcon({
-        className: "",
-        html: `<div style="background:#15803D;color:#fff;font-size:10px;font-weight:bold;padding:4px 8px;border-radius:8px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🎓 TUM Mombasa</div>`,
-        iconAnchor: [50, 10],
-      });
-      L.marker([TUM_LAT, TUM_LNG], { icon: tumIcon }).addTo(map);
 
       if (hasExactLocation) {
         // Property Pin
@@ -78,16 +71,6 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
           .addTo(map)
           .bindPopup(`<strong>${title}</strong><br>${area}`)
           .openPopup();
-
-        // 1km radius circle relative to TUM
-        L.circle([TUM_LAT, TUM_LNG], {
-          radius: 1000,
-          color: "#15803D",
-          fillColor: "#15803D",
-          fillOpacity: 0.05,
-          dashArray: "6, 8",
-          weight: 1.5,
-        }).addTo(map);
       } else {
         // Approximate location marker
         const areaIcon = L.divIcon({
@@ -111,7 +94,7 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
         delete (mapRef.current as any)._leaflet_id;
       }
     };
-  }, [centerLat, centerLng]);
+  }, [centerLat, centerLng, hasExactLocation, area, title]);
 
   return (
     <div className="space-y-3">
@@ -130,11 +113,11 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
         {!hasExactLocation ? (
           <p className="text-amber-600 bg-amber-50 px-3 py-2 rounded-xl border border-amber-100 flex-1">
-            📍 Showing general {area} area near TUM.
+            📍 Showing general {area} area.
           </p>
         ) : (
           <p className="text-gray-500 flex-1">
-            📍 Pinned location near TUM Mombasa Campus.
+            📍 Pinned property location in {area}.
           </p>
         )}
 
@@ -152,3 +135,4 @@ export default function PropertyMap({ lat, lng, mapUrl, title, area }: PropertyM
     </div>
   );
 }
+

@@ -16,26 +16,38 @@ interface MapPickerProps {
   onUrlChange?: (url: string) => void;
 }
 
-const TUM_LAT = -4.0435;
-const TUM_LNG = 39.6682;
+const DEFAULT_LAT = -4.0435;
+const DEFAULT_LNG = 39.6682;
 
-// Utility to extract coordinates from common map URLs
+// Comprehensive utility to extract coordinates from all Google Maps URL formats & raw inputs
 function parseCoordinatesFromUrl(url: string): { lat: number; lng: number } | null {
   if (!url) return null;
 
-  // Format 1: @lat,lng e.g. google.com/maps/@-4.0435,39.6682,17z
+  // Format 1: @lat,lng e.g. google.com/maps/@-4.043512,39.668234,17z
   const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
   if (atMatch) {
     return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
   }
 
-  // Format 2: q=lat,lng or ll=lat,lng e.g. maps.google.com/?q=-4.0435,39.6682
-  const qMatch = url.match(/[?&](?:q|ll)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  // Format 2: !3d-4.0435!4d39.6682 (Google Maps place/embed URLs)
+  const placeMatch = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if (placeMatch) {
+    return { lat: parseFloat(placeMatch[1]), lng: parseFloat(placeMatch[2]) };
+  }
+
+  // Format 3: !2d39.6682!3d-4.0435 (alternative order in embed links)
+  const altPlaceMatch = url.match(/!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/);
+  if (altPlaceMatch) {
+    return { lat: parseFloat(altPlaceMatch[2]), lng: parseFloat(altPlaceMatch[1]) };
+  }
+
+  // Format 4: q=lat,lng | ll=lat,lng | query=lat,lng | center=lat,lng | destination=lat,lng
+  const qMatch = url.match(/[?&](?:q|ll|query|center|destination|origin|near)=(-?\d+\.\d+),(-?\d+\.\d+)/);
   if (qMatch) {
     return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
   }
 
-  // Format 3: raw coordinates in string "-4.0435, 39.6682"
+  // Format 5: raw coordinates string e.g. "-4.043512, 39.668234"
   const rawMatch = url.match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);
   if (rawMatch) {
     return { lat: parseFloat(rawMatch[1]), lng: parseFloat(rawMatch[2]) };
@@ -51,17 +63,15 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
 
   const [inputUrl, setInputUrl] = useState(mapUrl);
   const [parseSuccess, setParseSuccess] = useState(false);
+  const [extractedCoords, setExtractedCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Initialize Leaflet map
   useEffect(() => {
     if (typeof window === "undefined" || !mapRef.current) return;
-    // Guard against React StrictMode double-invoke: if Leaflet already stamped
-    // a _leaflet_id on the container, a map is (or was) already initialised there.
     if ((mapRef.current as any)._leaflet_id) return;
     if (mapInstanceRef.current) return;
 
     import("leaflet").then((L) => {
-      // Double-check after async import resolves (StrictMode fires effects twice)
       if (!mapRef.current || (mapRef.current as any)._leaflet_id || mapInstanceRef.current) return;
 
       delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -71,12 +81,13 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      const initLat = lat ?? TUM_LAT;
-      const initLng = lng ?? TUM_LNG;
+      const hasCoords = lat !== null && lng !== null;
+      const initLat = lat ?? DEFAULT_LAT;
+      const initLng = lng ?? DEFAULT_LNG;
 
       const map = L.map(mapRef.current!, {
         center: [initLat, initLng],
-        zoom: 15,
+        zoom: hasCoords ? 16 : 13,
         zoomControl: true,
       });
 
@@ -84,14 +95,6 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
       }).addTo(map);
-
-      // TUM campus reference pin
-      const tumIcon = L.divIcon({
-        className: "",
-        html: `<div style="background:#15803D;color:#fff;font-size:10px;font-weight:bold;padding:4px 8px;border-radius:8px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🎓 TUM Mombasa</div>`,
-        iconAnchor: [50, 10],
-      });
-      L.marker([TUM_LAT, TUM_LNG], { icon: tumIcon }).addTo(map);
 
       // Add property pin if coordinates already exist
       if (lat && lng) {
@@ -129,8 +132,6 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
         mapInstanceRef.current = null;
       }
       markerRef.current = null;
-      // Clear the _leaflet_id Leaflet stamps onto the container so a fresh
-      // mount (React StrictMode double-invoke) doesn't see a "stale" id.
       if (mapRef.current) {
         delete (mapRef.current as any)._leaflet_id;
       }
@@ -162,8 +163,11 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
     const coords = parseCoordinatesFromUrl(val);
     if (coords) {
       onChange(coords.lat, coords.lng);
+      setExtractedCoords(coords);
       setParseSuccess(true);
-      setTimeout(() => setParseSuccess(false), 3000);
+    } else {
+      setExtractedCoords(null);
+      setParseSuccess(false);
     }
   };
 
@@ -199,6 +203,12 @@ export default function MapPicker({ lat, lng, mapUrl = "", onChange, onUrlChange
         <p className="text-[11px] text-gray-400">
           Paste a Google Maps share link, or drop a pin directly on the interactive map below.
         </p>
+        {extractedCoords && (
+          <div className="text-xs bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-lg flex items-center gap-2 font-mono">
+            <Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+            <span>Extracted Location: <strong>{extractedCoords.lat}</strong>, <strong>{extractedCoords.lng}</strong></span>
+          </div>
+        )}
       </div>
 
       {/* Option 2: Interactive Leaflet Map */}

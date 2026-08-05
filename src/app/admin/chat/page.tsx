@@ -267,7 +267,7 @@ export default function AdminChatPage() {
       {/* Main Chat Interface */}
       <div className="card grid grid-cols-1 md:grid-cols-3 h-[620px] overflow-hidden shadow-lg border border-gray-100">
         {/* Sidebar Conversations */}
-        <div className="border-r border-gray-100 flex flex-col bg-white">
+        <div className="border-r border-gray-100 flex flex-col bg-white min-h-0">
           <div className="p-4 border-b border-gray-100 space-y-2">
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -330,7 +330,7 @@ export default function AdminChatPage() {
         </div>
 
         {/* Message Thread */}
-        <div className="md:col-span-2 flex flex-col bg-gray-50/40">
+        <div className="md:col-span-2 flex flex-col bg-gray-50/40 min-h-0">
           {otherUser ? (
             <>
               <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between shadow-sm">

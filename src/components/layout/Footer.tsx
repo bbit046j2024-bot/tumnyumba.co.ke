@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Home, Phone, Mail, MapPin, Globe } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, MapPin, Globe } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -9,21 +10,25 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#1F6B4A] rounded-xl flex items-center justify-center">
-                <Home className="w-5 h-5 text-white" />
-              </div>
+              <Image
+                src="/logo.png"
+                alt="CampusKey Mombasa"
+                width={160}
+                height={44}
+                className="h-10 w-auto object-contain brightness-200"
+              />
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  <span className="font-poppins font-bold text-xl text-white">TUM</span>
-                  <span className="font-poppins font-bold text-xl text-[#3CB474] ml-1">Nyumba</span>
+                  <span className="font-poppins font-bold text-xl text-white">Campus</span>
+                  <span className="font-poppins font-bold text-xl text-[#3CB474] ml-0.5">Key</span>
                 </div>
                 <span className="text-[9px] font-bold tracking-widest text-[#3CB474] uppercase">
-                  FIND. LIVE. BELONG.
+                  MOMBASA
                 </span>
               </div>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
-              The most trusted student housing platform for TUM students. Safe. Affordable. Verified.
+              The premier student housing platform in Mombasa. Safe. Affordable. Verified.
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -120,7 +125,7 @@ export default function Footer() {
 
         <div className="mt-14 pt-8 border-t border-white/10 text-center">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} TUM Nyumba. All rights reserved. Find. Live. Belong.
+            © {new Date().getFullYear()} CampusKey Mombasa. All rights reserved. Find. Live. Belong.
           </p>
         </div>
       </div>
