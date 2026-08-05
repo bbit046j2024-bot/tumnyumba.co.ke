@@ -69,6 +69,8 @@ export async function POST(req: NextRequest) {
         mapUrl: body.mapUrl || null,
         rent: parseInt(body.rent),
         deposit: parseInt(body.deposit),
+        contactPerson: body.contactPerson || null,
+        contactPhone: body.contactPhone || null,
         description: body.description,
         availabilityStatus: body.availabilityStatus || "AVAILABLE",
         autoRelist: body.autoRelist || false,

@@ -44,6 +44,8 @@ interface PropertyDetail {
   latitude: number | null;
   longitude: number | null;
   mapUrl: string | null;
+  contactPerson?: string | null;
+  contactPhone?: string | null;
   images: { id: string; url: string; isPrimary: boolean }[];
   hasLead?: boolean;
   partner: {
@@ -343,10 +345,16 @@ export default function ListingDetailPage() {
                 <div className="grid grid-cols-1 gap-2 pt-2">
                   {property.hasLead || interestSubmitted ? (
                     <>
+                      {property.contactPhone ? (
+                        <a href={`tel:${property.contactPhone}`} className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700">
+                          <Phone className="w-4 h-4 text-white" />
+                          Call {property.contactPerson || "Caretaker/Agent"} ({property.contactPhone})
+                        </a>
+                      ) : null}
                       {property.partner.user.phone ? (
                         <a href={`tel:${property.partner.user.phone}`} className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl">
                           <Phone className="w-4 h-4 text-white" />
-                          Call {property.partner.user.phone}
+                          Call Partner ({property.partner.user.phone})
                         </a>
                       ) : null}
                       {property.partner.user.email ? (

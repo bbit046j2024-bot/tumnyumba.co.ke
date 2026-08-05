@@ -4,7 +4,7 @@ import { useState, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import {
-  MapPin, Plus, Check, Loader2, ArrowLeft, Upload, X, Image as ImageIcon
+  MapPin, Plus, Check, Loader2, ArrowLeft, Upload, X, Image as ImageIcon, PhoneCall, UserCheck
 } from "lucide-react";
 import Link from "next/link";
 import { containsPhone } from "@/lib/moderation";
@@ -30,6 +30,8 @@ export default function AddPropertyPage() {
   const [county, setCounty] = useState("Mombasa");
   const [subcounty, setSubcounty] = useState("Kisauni");
   const [area, setArea] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
   const [description, setDescription] = useState("");
   const [availability, setAvailability] = useState("AVAILABLE");
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -95,6 +97,7 @@ export default function AddPropertyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title, category, rent, deposit, county, subcounty, area,
+          contactPerson, contactPhone,
           description, availabilityStatus: availability, autoRelist, amenities,
           latitude, longitude, mapUrl,
           images: images.map(({ url, publicId }) => ({ url, publicId })),
@@ -183,6 +186,41 @@ export default function AddPropertyPage() {
           </div>
         </div>
 
+        {/* Property Specific Contact / Caretaker Information */}
+        <div className="bg-primary-50/50 p-5 rounded-2xl border border-primary-100/70 space-y-4">
+          <div>
+            <h3 className="font-poppins font-bold text-sm text-gray-900 flex items-center gap-2">
+              <PhoneCall className="w-4 h-4 text-primary-700" /> Direct Property Contact / Caretaker (Optional)
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              If an agent, caretaker, or specific person handles client calls for this property, provide their details below.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="input-label text-xs">Caretaker / Contact Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Caretaker Omari or Agent Sarah"
+                value={contactPerson}
+                onChange={(e) => setContactPerson(e.target.value)}
+                className="input bg-white text-sm"
+              />
+            </div>
+            <div>
+              <label className="input-label text-xs">Direct Contact Phone Number</label>
+              <input
+                type="tel"
+                placeholder="e.g. 0712345678"
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value)}
+                className="input bg-white text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Map Picker */}
         <div>
           <label className="input-label flex items-center gap-1.5">
@@ -204,9 +242,9 @@ export default function AddPropertyPage() {
           <textarea rows={4} placeholder="Spacious bedsitter with water, Wi-Fi, and secure environment. Walking distance to TUM..." value={description} onChange={(e) => setDescription(e.target.value)} className="input resize-none" required />
           {(containsPhone(title) || containsPhone(description)) && (
             <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium flex items-start gap-2">
-              <span className="font-bold text-amber-600 text-sm">⚠</span>
+              <PhoneCall className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <span>
-                Phone numbers are not allowed in titles or descriptions. Phone & email contact details are automatically released to students after they express interest.
+                Phone numbers are not allowed in titles or descriptions. Please use the dedicated Caretaker / Contact input fields above.
               </span>
             </div>
           )}

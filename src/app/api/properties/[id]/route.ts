@@ -51,7 +51,7 @@ export async function GET(
     }
 
     // Build the response — scrub contact details unless student has a lead
-    const { partner, ...rest } = property;
+    const { partner, contactPerson, contactPhone, ...rest } = property;
     const safePartner = {
       companyName: partner.companyName,
       user: {
@@ -64,7 +64,12 @@ export async function GET(
       },
     };
 
-    return NextResponse.json({ ...rest, partner: safePartner, hasLead });
+    return NextResponse.json({
+      ...rest,
+      partner: safePartner,
+      hasLead,
+      ...(hasLead && { contactPerson, contactPhone }),
+    });
   } catch (error) {
     console.error("[GET /api/properties/[id]]", error);
     return NextResponse.json(

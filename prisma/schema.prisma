@@ -134,6 +134,8 @@ model Property {
   mapUrl             String?            @db.Text
   rent               Int
   deposit            Int
+  contactPerson      String?
+  contactPhone       String?
   description        String             @db.Text
   availabilityStatus AvailabilityStatus @default(AVAILABLE)
   verificationStatus VerificationStatus @default(PENDING)
