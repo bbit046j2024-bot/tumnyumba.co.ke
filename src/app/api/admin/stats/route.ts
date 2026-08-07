@@ -17,7 +17,7 @@ export async function GET() {
       partnerApplications,
     ] = await Promise.all([
       prisma.property.count(),
-      prisma.partnerProfile.count({ where: { status: "APPROVED" } }),
+      prisma.partnerProfile.count({ where: { status: { in: ["APPROVED", "VERIFIED"] } } }),
       prisma.user.count({ where: { role: "STUDENT" } }),
       prisma.property.findMany({
         orderBy: { createdAt: "desc" },

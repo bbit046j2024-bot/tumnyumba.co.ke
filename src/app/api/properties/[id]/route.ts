@@ -16,9 +16,7 @@ export async function GET(
         images: true,
         partner: {
           include: {
-            // Always return name + companyName for display.
-            // phone and email are gated — only released after a Take.
-            user: { select: { id: true, name: true, phone: true, email: true } },
+            user: { select: { id: true, name: true } },
           },
         },
         _count: { select: { leads: true } },
@@ -29,14 +27,14 @@ export async function GET(
       return NextResponse.json({ error: "Property not found" }, { status: 404 });
     }
 
-    // Increment views asynchronously (don't await to avoid slowing response)
+    // Increment views asynchronously
     prisma.property
       .update({ where: { id }, data: { views: { increment: 1 } } })
       .catch(console.error);
 
     // ── Contact gating ────────────────────────────────────────────────────────
     // Check if the logged-in student has an active lead for this property.
-    // Only if they do, unlock the partner's phone + email.
+    // Main account details are kept private; only property-specific contact details are released.
     let hasLead = false;
     if (session?.user?.id) {
       const lead = await prisma.lead.findUnique({
@@ -50,17 +48,12 @@ export async function GET(
       hasLead = !!lead;
     }
 
-    // Build the response — scrub contact details unless student has a lead
+    // Build response — main account phone/email are strictly omitted.
     const { partner, contactPerson, contactPhone, ...rest } = property;
     const safePartner = {
       companyName: partner.companyName,
       user: {
         name: partner.user.name,
-        // Only expose contact details after a Take is logged
-        ...(hasLead && {
-          phone: partner.user.phone,
-          email: partner.user.email,
-        }),
       },
     };
 
@@ -68,6 +61,7 @@ export async function GET(
       ...rest,
       partner: safePartner,
       hasLead,
+      // Only release property-specific contact placed in the input field
       ...(hasLead && { contactPerson, contactPhone }),
     });
   } catch (error) {

@@ -118,11 +118,11 @@ export default function AdminApplicationsPage() {
                     </div>
                     <div className="flex items-center gap-2 md:flex-col md:items-end">
                       <button
-                        onClick={() => handleAction(app.id, "VERIFIED")}
+                        onClick={() => handleAction(app.id, "APPROVED")}
                         disabled={!!busy}
                         className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 disabled:opacity-50"
                       >
-                        {busy && actionLoading === app.id + "VERIFIED"
+                        {busy && actionLoading === app.id + "APPROVED"
                           ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                           : <CheckCircle2 className="w-3.5 h-3.5" />}
                         Approve

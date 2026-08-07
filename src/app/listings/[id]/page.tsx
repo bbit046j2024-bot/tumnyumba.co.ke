@@ -141,9 +141,11 @@ export default function ListingDetailPage() {
     );
   }
 
-  const whatsappNumber = property.partner.user.phone?.replace(/\D/g, "") || "";
+  const displayPhone = property.contactPhone || "";
+  const displayName = property.contactPerson || "Contact Person";
+  const whatsappNumber = displayPhone.replace(/\D/g, "");
   const whatsappMsg = encodeURIComponent(
-    `Hi ${property.partner.user.name}, I am interested in your listing: ${property.title} on CampusKey Mombasa.`
+    `Hi ${displayName}, I am interested in your listing: ${property.title} on CampusKey Mombasa.`
   );
 
   return (
@@ -346,23 +348,23 @@ export default function ListingDetailPage() {
                   {property.hasLead || interestSubmitted ? (
                     <>
                       {property.contactPhone ? (
-                        <a href={`tel:${property.contactPhone}`} className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700">
-                          <Phone className="w-4 h-4 text-white" />
-                          Call {property.contactPerson || "Caretaker/Agent"} ({property.contactPhone})
-                        </a>
-                      ) : null}
-                      {property.partner.user.phone ? (
-                        <a href={`tel:${property.partner.user.phone}`} className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl">
-                          <Phone className="w-4 h-4 text-white" />
-                          Call Partner ({property.partner.user.phone})
-                        </a>
-                      ) : null}
-                      {property.partner.user.email ? (
-                        <a href={`mailto:${property.partner.user.email}`} className="w-full btn-outline py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl">
-                          <Mail className="w-4 h-4 text-primary-700" />
-                          Email {property.partner.user.email}
-                        </a>
-                      ) : null}
+                        <>
+                          <a href={`tel:${property.contactPhone}`} className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700">
+                            <Phone className="w-4 h-4 text-white" />
+                            Call {property.contactPerson ? property.contactPerson : "Property Contact"} ({property.contactPhone})
+                          </a>
+                          {whatsappNumber ? (
+                            <a href={`https://wa.me/${whatsappNumber}?text=${whatsappMsg}`} target="_blank" rel="noopener noreferrer" className="w-full py-2.5 text-xs font-semibold flex items-center justify-center gap-2 rounded-xl bg-green-500 hover:bg-green-600 text-white transition-all">
+                              <MessageSquare className="w-4 h-4 text-white" />
+                              WhatsApp {displayName} ({property.contactPhone})
+                            </a>
+                          ) : null}
+                        </>
+                      ) : (
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium text-center">
+                          No direct caretaker/contact phone was placed for this listing.
+                        </div>
+                      )}
                     </>
                   ) : (
                     <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-center space-y-1">

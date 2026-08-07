@@ -7,7 +7,7 @@ export async function GET() {
     const [properties, students, partners] = await Promise.all([
       prisma.property.count({ where: { verificationStatus: "VERIFIED" } }),
       prisma.user.count({ where: { role: "STUDENT" } }),
-      prisma.partnerProfile.count({ where: { status: "APPROVED" } }),
+      prisma.partnerProfile.count({ where: { status: { in: ["APPROVED", "VERIFIED"] } } }),
     ]);
 
     return NextResponse.json({ properties, students, partners }, {

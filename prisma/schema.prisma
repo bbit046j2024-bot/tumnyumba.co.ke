@@ -20,6 +20,7 @@ enum Role {
 enum PartnerStatus {
   PENDING
   APPROVED
+  VERIFIED
   SUSPENDED
   REJECTED
 }

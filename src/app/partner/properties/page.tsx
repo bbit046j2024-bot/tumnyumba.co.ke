@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   PlusCircle, Search, Home, MapPin, Loader2, Eye,
-  ToggleLeft, ToggleRight, Trash2
+  ToggleLeft, ToggleRight, Trash2, Pencil
 } from "lucide-react";
 
 interface Property {
@@ -175,6 +175,12 @@ export default function PartnerPropertiesPage() {
                   <span><strong className="text-primary-700">{item._count.leads}</strong> Leads</span>
                 </div>
                 <div className="flex items-center gap-2">
+                  <Link
+                    href={`/partner/properties/${item.id}/edit`}
+                    className="btn-ghost text-xs border border-gray-200 py-1.5 px-3 flex items-center gap-1 hover:border-primary-600 hover:text-primary-700 transition-all"
+                  >
+                    <Pencil className="w-3.5 h-3.5 text-gray-500" /> Edit
+                  </Link>
                   <button
                     onClick={() => toggleStatus(item.id, item.availabilityStatus)}
                     disabled={togglingId === item.id}

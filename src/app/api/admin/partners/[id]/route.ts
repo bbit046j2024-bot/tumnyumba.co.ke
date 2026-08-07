@@ -15,10 +15,20 @@ export async function PATCH(
     const { id } = await params;
     const { status } = await req.json();
 
-    const updated = await prisma.partnerProfile.update({
-      where: { id },
-      data: { status },
-    });
+    let updated;
+    try {
+      updated = await prisma.partnerProfile.update({
+        where: { id },
+        data: { status },
+      });
+    } catch {
+      // Fallback for MySQL enum column compatibility
+      const dbStatus = status === "VERIFIED" ? "APPROVED" : status;
+      updated = await prisma.partnerProfile.update({
+        where: { id },
+        data: { status: dbStatus },
+      });
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

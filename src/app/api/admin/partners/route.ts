@@ -10,12 +10,14 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status"); // PENDING | VERIFIED | SUSPENDED | ALL
+    const status = searchParams.get("status"); // PENDING | APPROVED | SUSPENDED | ALL
     const search = searchParams.get("search");
 
     const partners = await prisma.partnerProfile.findMany({
       where: {
-        ...(status && status !== "ALL" && { status: status as any }),
+        ...(status && status !== "ALL" && {
+          status: status === "VERIFIED" ? { in: ["VERIFIED", "APPROVED"] } : (status as any),
+        }),
         ...(search && {
           OR: [
             { companyName: { contains: search } },

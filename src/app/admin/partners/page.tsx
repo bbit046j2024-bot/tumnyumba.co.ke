@@ -14,6 +14,7 @@ interface Partner {
 }
 
 const STATUS_STYLES: Record<string, string> = {
+  APPROVED: "badge-success",
   VERIFIED: "badge-success",
   PENDING: "badge-warning",
   SUSPENDED: "badge-danger",
@@ -85,10 +86,10 @@ export default function AdminPartnersPage() {
     }
   };
 
-  const counts = {
+  const counts: Record<string, number> = {
     ALL: partners.length,
     PENDING: partners.filter((p) => p.status === "PENDING").length,
-    VERIFIED: partners.filter((p) => p.status === "VERIFIED").length,
+    VERIFIED: partners.filter((p) => p.status === "VERIFIED" || p.status === "APPROVED").length,
     SUSPENDED: partners.filter((p) => p.status === "SUSPENDED").length,
   };
 
@@ -119,7 +120,7 @@ export default function AdminPartnersPage() {
                 : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
             }`}
           >
-            {s === "ALL" ? "All" : s.charAt(0) + s.slice(1).toLowerCase()} ({counts[s]})
+            {s === "ALL" ? "All" : s === "VERIFIED" ? "Verified" : s.charAt(0) + s.slice(1).toLowerCase()} ({counts[s] ?? 0})
           </button>
         ))}
       </div>
@@ -180,17 +181,17 @@ export default function AdminPartnersPage() {
                       <td className="p-4 text-gray-600 font-mono text-xs">{p.licenseNumber || "—"}</td>
                       <td className="p-4 font-bold text-primary-700">{p._count.properties}</td>
                       <td className="p-4">
-                        <span className={STATUS_STYLES[p.status] || "badge-warning"}>
-                          {p.status.charAt(0) + p.status.slice(1).toLowerCase()}
+                        <span className={STATUS_STYLES[p.status] || (p.status === "APPROVED" || p.status === "VERIFIED" ? "badge-success" : "badge-warning")}>
+                          {p.status === "APPROVED" || p.status === "VERIFIED" ? "Verified" : p.status.charAt(0) + p.status.slice(1).toLowerCase()}
                         </span>
                       </td>
                       <td className="p-4">
                         <div className="flex items-center justify-end gap-1.5">
-                          {p.status !== "VERIFIED" && (
+                          {p.status !== "VERIFIED" && p.status !== "APPROVED" && (
                             <button
                               onClick={() => updateStatus(p.id, "VERIFIED")}
                               disabled={!!busy}
-                              title="Approve"
+                              title="Verify"
                               className="p-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors disabled:opacity-50"
                             >
                               {busy && actionLoading === p.id + "VERIFIED"
