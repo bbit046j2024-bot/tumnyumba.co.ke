@@ -142,7 +142,7 @@ export default function ListingDetailPage() {
   }
 
   const displayPhone = property.contactPhone || "";
-  const displayName = property.contactPerson || "Contact Person";
+  const displayName = property.contactPerson || property.partner.user.name;
   const whatsappNumber = displayPhone.replace(/\D/g, "");
   const whatsappMsg = encodeURIComponent(
     `Hi ${displayName}, I am interested in your listing: ${property.title} on CampusKey Mombasa.`
@@ -361,8 +361,9 @@ export default function ListingDetailPage() {
                           ) : null}
                         </>
                       ) : (
-                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium text-center">
-                          No direct caretaker/contact phone was placed for this listing.
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium text-center space-y-1">
+                          <p className="font-semibold">No contact phone listed for this property.</p>
+                          <p className="text-amber-700 font-normal">The partner has not filled in the <span className="font-semibold">Direct Contact Phone Number</span> field for this listing. Please check back later.</p>
                         </div>
                       )}
                     </>

@@ -16,7 +16,7 @@ export async function GET(
         images: true,
         partner: {
           include: {
-            user: { select: { id: true, name: true } },
+            user: { select: { id: true, name: true, phone: true, email: true } },
           },
         },
         _count: { select: { leads: true } },
@@ -33,8 +33,6 @@ export async function GET(
       .catch(console.error);
 
     // ── Contact gating ────────────────────────────────────────────────────────
-    // Check if the logged-in student has an active lead for this property.
-    // Main account details are kept private; only property-specific contact details are released.
     let hasLead = false;
     if (session?.user?.id) {
       const lead = await prisma.lead.findUnique({
@@ -48,7 +46,8 @@ export async function GET(
       hasLead = !!lead;
     }
 
-    // Build response — main account phone/email are strictly omitted.
+    // Only release property-specific contact placed in the listing input fields.
+    // Registration account phone/email are NEVER exposed publicly.
     const { partner, contactPerson, contactPhone, ...rest } = property;
     const safePartner = {
       companyName: partner.companyName,
@@ -61,8 +60,11 @@ export async function GET(
       ...rest,
       partner: safePartner,
       hasLead,
-      // Only release property-specific contact placed in the input field
-      ...(hasLead && { contactPerson, contactPhone }),
+      // Only release contact if student has expressed interest AND partner filled the property contact field
+      ...(hasLead && {
+        contactPhone: contactPhone || null,
+        contactPerson: contactPerson || null,
+      }),
     });
   } catch (error) {
     console.error("[GET /api/properties/[id]]", error);
