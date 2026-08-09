@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ShieldCheck, Target, Heart, Award } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn how CampusKey Mombasa is eliminating student housing stress through technology, verification, and trusted local partnerships.",
+  alternates: { canonical: "https://campuskey.co.ke/about" },
+  openGraph: {
+    title: "About CampusKey Mombasa",
+    description:
+      "Eliminating student housing stress through technology, verification, and trusted local partnerships.",
+    url: "https://campuskey.co.ke/about",
+  },
+};
+
+
 
 export default function AboutPage() {
   return (

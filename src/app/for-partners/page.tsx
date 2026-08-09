@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { Building2, CheckCircle2, TrendingUp, Users, Shield, ArrowRight, DollarSign } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "For Partners",
+  description:
+    "List your rental properties on CampusKey Mombasa and reach thousands of verified students. Join our partner network today.",
+  alternates: { canonical: "https://campuskey.co.ke/for-partners" },
+  openGraph: {
+    title: "Partner with CampusKey Mombasa",
+    description:
+      "List your rental properties and reach thousands of verified students. Join our partner network today.",
+    url: "https://campuskey.co.ke/for-partners",
+  },
+};
+
+
 
 export default function ForPartnersPage() {
   return (

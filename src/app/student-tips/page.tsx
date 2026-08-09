@@ -1,9 +1,23 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import {
   ShieldAlert, Lightbulb, MapPin, KeyRound, CheckCircle2, DollarSign, Users, AlertTriangle, ArrowRight, HeartHandshake
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Student Housing Tips",
+  description:
+    "Smart tips for Mombasa students on finding safe, affordable accommodation — avoid scams, budget wisely, and navigate off-campus living with confidence.",
+  alternates: { canonical: "https://campuskey.co.ke/student-tips" },
+  openGraph: {
+    title: "Student Housing Tips — CampusKey Mombasa",
+    description:
+      "Avoid scams, budget wisely, and navigate off-campus living with confidence.",
+    url: "https://campuskey.co.ke/student-tips",
+  },
+};
 
 const tips = [
   {

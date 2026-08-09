@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { Search, Home, CheckCircle2, ShieldCheck, ArrowRight, PhoneCall, Building2, UserCheck } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "How It Works",
+  description:
+    "See how CampusKey Mombasa makes finding student housing simple — search listings, request a viewing, get verified accommodation near your campus.",
+  alternates: { canonical: "https://campuskey.co.ke/how-it-works" },
+  openGraph: {
+    title: "How CampusKey Mombasa Works",
+    description:
+      "Search listings, request a viewing, get verified accommodation near your campus.",
+    url: "https://campuskey.co.ke/how-it-works",
+  },
+};
+
+
 
 const studentSteps = [
   {

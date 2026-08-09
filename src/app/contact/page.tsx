@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Get in touch with CampusKey Mombasa. Reach out to our team for support, partnership enquiries, or listing help.",
+  alternates: { canonical: "https://campuskey.co.ke/contact" },
+  openGraph: {
+    title: "Contact CampusKey Mombasa",
+    description:
+      "Reach out to our team for support, partnership enquiries, or listing help.",
+    url: "https://campuskey.co.ke/contact",
+  },
+};
+
+
 
 export default function ContactPage() {
   return (

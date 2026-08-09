@@ -2,10 +2,33 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CampusKey Mombasa — Find. Live. Belong.",
+  title: {
+    default: "CampusKey Mombasa — Find. Live. Belong.",
+    template: "%s | CampusKey Mombasa",
+  },
   description:
     "The most trusted student housing platform in Mombasa. Find verified, affordable rentals near campus.",
-  keywords: ["CampusKey", "CampusKey Mombasa", "student housing Mombasa", "Mombasa rentals", "verified student accommodation"],
+  keywords: [
+    "CampusKey",
+    "CampusKey Mombasa",
+    "student housing Mombasa",
+    "Mombasa rentals",
+    "verified student accommodation",
+    "bedsitters near TUM",
+    "student rooms Mombasa",
+    "affordable housing Mombasa",
+    "campuskey.co.ke",
+  ],
+  // ─── Google Search Console verification ──────────────────────────────────
+  // Replace the value below with your actual code from:
+  // https://search.google.com/search-console → Add Property → HTML tag method
+  verification: {
+    google: "REPLACE_WITH_YOUR_GOOGLE_VERIFICATION_CODE",
+  },
+  // ─────────────────────────────────────────────────────────────────────────
+  alternates: {
+    canonical: "https://campuskey.co.ke",
+  },
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
@@ -16,7 +39,7 @@ export const metadata: Metadata = {
     description: "Safe. Affordable. Verified. Connecting students to trusted rentals near campus.",
     url: "https://campuskey.co.ke",
     siteName: "CampusKey Mombasa",
-    images: [{ url: "/logo.png", width: 1200, height: 630 }],
+    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "CampusKey Mombasa logo" }],
     locale: "en_KE",
     type: "website",
   },
