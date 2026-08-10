@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   // Replace the value below with your actual code from:
   // https://search.google.com/search-console → Add Property → HTML tag method
   verification: {
-    google: "REPLACE_WITH_YOUR_GOOGLE_VERIFICATION_CODE",
+    google: "c3a14be1f7c98c03",
   },
   // ─────────────────────────────────────────────────────────────────────────
   alternates: {
