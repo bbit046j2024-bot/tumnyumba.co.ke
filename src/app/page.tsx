@@ -11,6 +11,7 @@ import {
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PropertyCard from "@/components/listings/PropertyCard";
+import Particles from "@/components/magicui/particles";
 
 const areas = ["All Areas", "Tudor", "TUM", "Tononoka", "Buxton", "Mikindani", "Maweni", "Mtomondoni", "Magongo", "Majengo", "Nyali"];
 const priceRanges = [
@@ -153,7 +154,8 @@ export default function HomePage() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-b from-[#EAF3EC] via-[#F4F8F5] to-white pt-24 pb-16">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <Particles className="absolute inset-0 z-0" quantity={45} ease={80} color="#1F6B4A" refresh />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Col */}
             <div className="lg:col-span-7">

@@ -38,7 +38,7 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   return (
     <Link href={`/listings/${id}`}>
-      <div className="card-hover group overflow-hidden h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_18px_rgba(31,107,74,0.12)] transition-all duration-300">
+      <div className="card-hover magic-card group overflow-hidden h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_18px_rgba(31,107,74,0.12)] transition-all duration-300">
         {/* Image */}
         <div className="relative h-48 bg-gray-100 overflow-hidden rounded-t-2xl">
           {image ? (
