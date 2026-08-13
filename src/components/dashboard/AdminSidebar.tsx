@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Building2, Users, FileText,
   BarChart3, MessageSquare, Megaphone, Settings, LogOut,
-  ChevronLeft, ChevronRight, Bell, TrendingUp,
+  ChevronLeft, ChevronRight, Bell, TrendingUp, ShieldCheck,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -16,6 +16,7 @@ const navItems = [
   { href: "/admin/partners", icon: Building2, label: "Partners" },
   { href: "/admin/applications", icon: FileText, label: "Applications" },
   { href: "/admin/students", icon: Users, label: "Students" },
+  { href: "/admin/admins", icon: ShieldCheck, label: "Admins" },
   { href: "/admin/revenue", icon: TrendingUp, label: "Revenue" },
   { href: "/admin/chat", icon: MessageSquare, label: "Chat" },
   { href: "/admin/advertisements", icon: Megaphone, label: "Advertisements" },
