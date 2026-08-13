@@ -28,7 +28,11 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password. Please try again.");
+      if (result.error.includes("EMAIL_NOT_VERIFIED")) {
+        setError("EMAIL_NOT_VERIFIED");
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
     } else {
       const session = await getSession();
       if (session?.user?.role === "ADMIN") {
@@ -64,9 +68,20 @@ export default function LoginPage() {
           <p className="text-gray-500 text-sm mb-7">Sign in to your CampusKey Mombasa account</p>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
-              {error}
+            <div className={`border text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2 ${
+              error === "EMAIL_NOT_VERIFIED"
+                ? "bg-amber-50 border-amber-200 text-amber-800"
+                : "bg-red-50 border-red-200 text-red-700"
+            }`}>
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current" />
+              {error === "EMAIL_NOT_VERIFIED" ? (
+                <span>
+                  Please verify your email before signing in.{" "}
+                  <a href="/auth/verify-email" className="font-semibold underline">
+                    Resend verification email
+                  </a>
+                </span>
+              ) : error}
             </div>
           )}
 

@@ -33,7 +33,7 @@ export default function StudentRegisterPage() {
     setLoading(false);
 
     if (!res.ok) { setError(data.error || "Registration failed"); return; }
-    router.push("/auth/login?registered=true");
+    router.push("/auth/verify-email");
   };
 
   return (

@@ -176,7 +176,7 @@ export default function ListingDetailClient() {
             <div className="space-y-3">
               <div className="relative h-[360px] sm:h-[450px] w-full rounded-2xl overflow-hidden bg-gray-100 shadow-md">
                 {activeImage ? (
-                  <Image src={activeImage} alt={property.title} fill priority className="object-cover transition-all duration-300" />
+                  <Image src={activeImage} alt={property.title} fill priority sizes="(max-width: 768px) 100vw, 75vw" className="object-cover transition-all duration-300" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
                     <Bed className="w-16 h-16 text-primary-400" />
@@ -198,7 +198,7 @@ export default function ListingDetailClient() {
                 <div className="flex items-center gap-3 overflow-x-auto pb-2">
                   {property.images.map((img) => (
                     <button key={img.id} onClick={() => setActiveImage(img.url)} className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${activeImage === img.url ? "border-primary-600 scale-95" : "border-transparent opacity-70 hover:opacity-100"}`}>
-                      <Image src={img.url} alt="Thumbnail" fill className="object-cover" />
+                      <Image src={img.url} alt="Thumbnail" fill sizes="80px" className="object-cover" />
                     </button>
                   ))}
                 </div>

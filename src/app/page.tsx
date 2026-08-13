@@ -165,7 +165,7 @@ export default function HomePage() {
                 <span className="magic-text">In Mombasa</span>
               </h1>
               <p className="magic-fade-up magic-fade-up-delay-2 text-base sm:text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
-                Safe. Affordable. Verified. Connecting students to trusted rentals across Mombasa — no scams, no stress.
+                Safe. Affordable. Verified. Connecting students to trusted rentals across Mombasa no scams,no stress.
               </p>
 
               {/* Search Bar */}
@@ -202,7 +202,7 @@ export default function HomePage() {
               <div className="absolute w-96 h-96 bg-[#E4F0E9] rounded-full filter blur-2xl opacity-70 -z-10" />
               <div className="magic-float relative w-full h-[420px] rounded-3xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.1)] border-4 border-white bg-[#EAF3EC]">
                 <Image
-                  src="https://static.vecteezy.com/system/resources/previews/026/586/050/large_2x/beautiful-modern-house-exterior-with-carport-modern-residential-district-and-minimalist-building-concept-by-ai-generated-free-photo.jpg"
+                  src="https://cdn.getyourguide.com/img/tour/6482e758e0e0f.jpeg/148.jpg"
                   alt="Modern Student Housing near TUM"
                   fill
                   sizes="(max-width: 1024px) 100vw, 500px"

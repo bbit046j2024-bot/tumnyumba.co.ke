@@ -16,12 +16,22 @@ export default function ForgotPasswordPage() {
     if (!email) return;
     setLoading(true);
 
-    // Simulate password reset request / call API endpoint if available
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      // Always show success state (API returns 200 regardless of whether email exists)
       setSubmitted(true);
-    }, 1200);
+    } catch {
+      // Still show success to not reveal info
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-between">

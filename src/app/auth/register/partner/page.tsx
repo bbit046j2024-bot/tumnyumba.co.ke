@@ -31,7 +31,7 @@ export default function PartnerRegisterPage() {
     setLoading(false);
 
     if (!res.ok) { setError(data.error || "Registration failed"); return; }
-    router.push("/auth/login?registered=partner");
+    router.push("/auth/verify-email");
   };
 
   return (

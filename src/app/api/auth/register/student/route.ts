@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -33,7 +35,23 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ message: "Student account created successfully", userId: user.id }, { status: 201 });
+    // Generate email verification token (24h expiry)
+    const token = randomBytes(32).toString("hex");
+    await prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Send verification email (non-blocking)
+    sendVerificationEmail(email, name, token).catch(console.error);
+
+    return NextResponse.json(
+      { message: "Student account created successfully. Please check your email to verify your account.", userId: user.id },
+      { status: 201 }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message || "Failed to create student account" }, { status: 500 });
   }

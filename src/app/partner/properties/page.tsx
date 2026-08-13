@@ -141,7 +141,7 @@ export default function PartnerPropertiesPage() {
               {/* Image thumbnail */}
               {item.images[0]?.url && (
                 <div className="relative h-40 rounded-xl overflow-hidden bg-gray-100">
-                  <Image src={item.images[0].url} alt={item.title} fill className="object-cover" />
+                  <Image src={item.images[0].url} alt={item.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
                 </div>
               )}
 

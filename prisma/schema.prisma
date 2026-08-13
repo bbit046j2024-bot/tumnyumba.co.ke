@@ -71,22 +71,25 @@ enum FundingType {
 // ─── MODELS ───────────────────────────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  phone     String?  @unique
-  password  String
-  role      Role     @default(STUDENT)
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  phone         String?   @unique
+  password      String
+  role          Role      @default(STUDENT)
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  studentProfile  StudentProfile?
-  partnerProfile  PartnerProfile?
-  leads           Lead[]           @relation("StudentLeads")
-  savedProperties SavedProperty[]
-  sentMessages    Message[]        @relation("SentMessages")
-  conversations   ConversationParticipant[]
+  studentProfile     StudentProfile?
+  partnerProfile     PartnerProfile?
+  leads              Lead[]                    @relation("StudentLeads")
+  savedProperties    SavedProperty[]
+  sentMessages       Message[]                 @relation("SentMessages")
+  conversations      ConversationParticipant[]
+  verificationTokens VerificationToken[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
 }
@@ -329,4 +332,32 @@ model Message {
   // Fetched per-conversation thread, ordered by time — composite index is essential
   @@index([conversationId, createdAt(sort: Asc)])
   @@map("messages")
+}
+
+// ─── EMAIL VERIFICATION & PASSWORD RESET ──────────────────────────────────────
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }

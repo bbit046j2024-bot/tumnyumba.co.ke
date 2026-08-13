@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "static.vecteezy.com" },
+      { protocol: "https", hostname: "cdn.getyourguide.com" },
     ],
   },
   turbopack: {
