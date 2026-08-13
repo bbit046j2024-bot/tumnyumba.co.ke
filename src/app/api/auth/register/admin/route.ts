@@ -20,12 +20,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email },
+          ...(phone ? [{ phone }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "User with this email already exists" }, { status: 400 });
+      if (existingUser.email.toLowerCase() === email.toLowerCase()) {
+        return NextResponse.json({ error: "An account with this email address already exists." }, { status: 400 });
+      }
+      return NextResponse.json({ error: "An account with this phone number already exists." }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

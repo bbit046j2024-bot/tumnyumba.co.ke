@@ -23,7 +23,10 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "Partner with this email or phone already exists" }, { status: 400 });
+      if (existingUser.email.toLowerCase() === email.toLowerCase()) {
+        return NextResponse.json({ error: "An account with this email address already exists." }, { status: 400 });
+      }
+      return NextResponse.json({ error: "An account with this phone number already exists." }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
