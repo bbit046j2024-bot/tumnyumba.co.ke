@@ -282,3 +282,141 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* ─── Magic UI Animations ──────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(60, 180, 116, 0); }
+  50% { box-shadow: 0 0 20px 6px rgba(60, 180, 116, 0.25); }
+}
+
+@keyframes border-beam {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Shimmer gradient text */
+.magic-text {
+  background: linear-gradient(
+    90deg,
+    #3CB474 0%,
+    #1F6B4A 25%,
+    #6ee7b7 50%,
+    #1F6B4A 75%,
+    #3CB474 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Glowing card on hover */
+.magic-card {
+  transition: all 0.3s ease;
+  position: relative;
+}
+.magic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(31, 107, 74, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Floating element */
+.magic-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Fade up on load */
+.magic-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+.magic-fade-up-delay-1 { animation-delay: 0.1s; }
+.magic-fade-up-delay-2 { animation-delay: 0.2s; }
+.magic-fade-up-delay-3 { animation-delay: 0.3s; }
+.magic-fade-up-delay-4 { animation-delay: 0.4s; }
+
+/* Shimmer button */
+.magic-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1F6B4A, #3CB474, #1F6B4A);
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+  transition: all 0.3s ease;
+}
+.magic-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shine 2.5s linear infinite;
+}
+.magic-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(31, 107, 74, 0.4);
+}
+
+/* Social icon hover glow */
+.magic-social {
+  transition: all 0.25s ease;
+}
+.magic-social:hover {
+  transform: translateY(-3px) scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(60, 180, 116, 0.4));
+}
+
+/* Animated border gradient */
+.magic-border {
+  position: relative;
+  border-radius: 16px;
+}
+.magic-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  background: linear-gradient(135deg, #3CB474, #1F6B4A, #6ee7b7, #1F6B4A);
+  background-size: 300% 300%;
+  animation: border-beam 4s ease infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.magic-border:hover::before {
+  opacity: 1;
+}

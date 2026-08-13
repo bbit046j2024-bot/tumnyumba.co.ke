@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Search, MapPin, DollarSign, Home, Shield, CheckCircle2, Star,
-  ArrowRight, Building2, Users, TrendingUp, Award, Loader2
+  ArrowRight, Building2, Users, TrendingUp, Loader2
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -157,22 +157,17 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Col */}
             <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 bg-[#E4F0E9] border border-[#1F6B4A]/20 rounded-full px-4 py-1.5 mb-6">
-                <Award className="w-4 h-4 text-[#1F6B4A]" />
-                <span className="text-xs text-[#1F6B4A] font-semibold uppercase tracking-wider">CampusKey Mombasa</span>
-              </div>
-
-              <h1 className="font-poppins font-bold text-4xl sm:text-5xl lg:text-6xl text-[#1F2937] leading-[1.1] mb-6">
+              <h1 className="magic-fade-up magic-fade-up-delay-1 font-poppins font-bold text-4xl sm:text-5xl lg:text-6xl text-[#1F2937] leading-[1.1] mb-6">
                 Find Verified <br className="hidden sm:inline" />
                 Student Housing <br />
-                <span className="text-[#1F6B4A]">In Mombasa</span>
+                <span className="magic-text">In Mombasa</span>
               </h1>
-              <p className="text-base sm:text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
+              <p className="magic-fade-up magic-fade-up-delay-2 text-base sm:text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
                 Safe. Affordable. Verified. Connecting students to trusted rentals across Mombasa — no scams, no stress.
               </p>
 
               {/* Search Bar */}
-              <div className="bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 max-w-2xl">
+              <div className="magic-fade-up magic-fade-up-delay-3 magic-border bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 max-w-2xl">
                 <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-100 gap-2 mb-3">
                   <div className="px-3 py-1">
                     <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6B7280] mb-1">Location</label>
@@ -193,7 +188,7 @@ export default function HomePage() {
                     </select>
                   </div>
                 </div>
-                <button onClick={handleSearch} className="w-full bg-[#1F6B4A] hover:bg-[#175339] text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-xs flex items-center justify-center gap-2">
+                <button onClick={handleSearch} className="magic-btn w-full text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2">
                   <Search className="w-4 h-4" />
                   Search Properties
                 </button>
@@ -203,7 +198,7 @@ export default function HomePage() {
             {/* Right Col */}
             <div className="lg:col-span-5 relative hidden lg:flex items-center justify-center">
               <div className="absolute w-96 h-96 bg-[#E4F0E9] rounded-full filter blur-2xl opacity-70 -z-10" />
-              <div className="relative w-full h-[420px] rounded-3xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.1)] border-4 border-white bg-[#EAF3EC]">
+              <div className="magic-float relative w-full h-[420px] rounded-3xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.1)] border-4 border-white bg-[#EAF3EC]">
                 <Image
                   src="https://static.vecteezy.com/system/resources/previews/026/586/050/large_2x/beautiful-modern-house-exterior-with-carport-modern-residential-district-and-minimalist-building-concept-by-ai-generated-free-photo.jpg"
                   alt="Modern Student Housing near TUM"
@@ -221,8 +216,8 @@ export default function HomePage() {
       {/* ─── TRUST BADGES ────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-16 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {trustBadges.map(({ icon: Icon, title, desc, color }) => (
-            <div key={title} className="card p-5 flex items-start gap-4 hover:shadow-card-hover transition-all bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          {trustBadges.map(({ icon: Icon, title, desc, color }, i) => (
+            <div key={title} className={`magic-card magic-fade-up magic-fade-up-delay-${i + 1} p-5 flex items-start gap-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]`}>
               <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${color}`}>
                 <Icon className="w-5 h-5" />
               </div>
@@ -238,8 +233,8 @@ export default function HomePage() {
       {/* ─── STATS ────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {statCards.map(({ icon: Icon, value, label, color }) => (
-            <div key={label} className="card p-6 text-center bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          {statCards.map(({ icon: Icon, value, label, color }, i) => (
+            <div key={label} className={`magic-card magic-border p-6 text-center bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]`}>
               <div className="w-12 h-12 rounded-full bg-[#E4F0E9] text-[#1F6B4A] flex items-center justify-center mx-auto mb-3">
                 <Icon className="w-6 h-6" />
               </div>
@@ -309,8 +304,8 @@ export default function HomePage() {
             <p className="text-[#6B7280] max-w-xl mx-auto">Finding your ideal student home in Mombasa is now easier than ever.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {howItWorks.map(({ step, title, desc, icon: Icon }) => (
-              <div key={step} className="card p-8 text-center relative bg-white rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+            {howItWorks.map(({ step, title, desc, icon: Icon }, i) => (
+              <div key={step} className={`magic-card magic-border magic-fade-up magic-fade-up-delay-${i + 1} p-8 text-center relative bg-white rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.04)]`}>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#1F6B4A] text-white text-xs font-bold rounded-full flex items-center justify-center font-poppins">
                   {step}
                 </div>
@@ -345,7 +340,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <Link href="/auth/register/partner" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#1F6B4A] text-white font-semibold rounded-xl hover:bg-[#175339] transition-all font-poppins shadow-xs">
+            <Link href="/auth/register/partner" className="magic-btn inline-flex items-center justify-center gap-2 px-7 py-3.5 text-white font-semibold rounded-xl font-poppins">
               Partner With Us
             </Link>
             <Link href="/for-partners" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-[#1F6B4A]/30 text-[#1F6B4A] font-semibold rounded-xl hover:bg-[#1F6B4A]/5 transition-all font-poppins">

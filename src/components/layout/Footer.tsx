@@ -20,7 +20,7 @@ export default function Footer() {
               <div className="flex flex-col">
                 <div className="flex items-center">
                   <span className="font-poppins font-bold text-xl text-white">Campus</span>
-                  <span className="font-poppins font-bold text-xl text-[#3CB474] ml-0.5">Key</span>
+                  <span className="font-poppins font-bold text-xl magic-text ml-0.5">Key</span>
                 </div>
                 <span className="text-[9px] font-bold tracking-widest text-[#3CB474] uppercase">
                   MOMBASA
@@ -33,7 +33,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 flex-wrap">
               <a
                 href="#"
-                className="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors"
                 title="Website"
               >
                 <Globe className="w-4 h-4 text-white" />
@@ -41,7 +41,7 @@ export default function Footer() {
               {/* WhatsApp */}
               <a
                 href="https://chat.whatsapp.com/LhZ1amfYHL5Ln5ogBkoNnw"
-                className="w-9 h-9 bg-white/10 hover:bg-[#25D366] rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-[#25D366] rounded-lg flex items-center justify-center transition-colors"
                 title="WhatsApp"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -54,7 +54,7 @@ export default function Footer() {
               {/* Facebook */}
               <a
                 href="https://www.facebook.com/share/g/1DduV8rrGp/"
-                className="w-9 h-9 bg-white/10 hover:bg-[#1877F2] rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-[#1877F2] rounded-lg flex items-center justify-center transition-colors"
                 title="Facebook Group"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -66,7 +66,7 @@ export default function Footer() {
               {/* X (Twitter) */}
               <a
                 href="https://twitter.com/Campuskeymombas"
-                className="w-9 h-9 bg-white/10 hover:bg-black rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-black rounded-lg flex items-center justify-center transition-colors"
                 title="X (Twitter)"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -78,7 +78,7 @@ export default function Footer() {
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/campuskey_mombasa/"
-                className="w-9 h-9 bg-white/10 hover:bg-gradient-to-br hover:from-[#833AB4] hover:via-[#FD1D1D] hover:to-[#F77737] rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-gradient-to-br hover:from-[#833AB4] hover:via-[#FD1D1D] hover:to-[#F77737] rounded-lg flex items-center justify-center transition-colors"
                 title="Instagram"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -90,13 +90,25 @@ export default function Footer() {
               {/* YouTube */}
               <a
                 href="https://www.youtube.com/channel/UCHbfV6Hkwc_HzaiH97UwISA"
-                className="w-9 h-9 bg-white/10 hover:bg-[#FF0000] rounded-lg flex items-center justify-center transition-colors"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-[#FF0000] rounded-lg flex items-center justify-center transition-colors"
                 title="YouTube Channel"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+              </a>
+              {/* TikTok */}
+              <a
+                href="https://www.tiktok.com/@campuskeymombasa"
+                className="magic-social w-9 h-9 bg-white/10 hover:bg-[#010101] rounded-lg flex items-center justify-center transition-colors"
+                title="TikTok"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.83 1.55V6.79a4.85 4.85 0 0 1-1.06-.1z" />
                 </svg>
               </a>
             </div>
