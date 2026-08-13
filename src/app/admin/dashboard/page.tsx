@@ -26,6 +26,7 @@ interface AdminStats {
     status: string;
     user: { name: string; email: string };
   }>;
+  weeklyData?: Array<{ label: string; count: number }>;
 }
 
 export default function AdminDashboardPage() {
@@ -128,12 +129,32 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className="h-48 bg-gradient-to-b from-emerald-50/50 to-transparent rounded-2xl border border-emerald-100 p-4 flex items-end justify-between gap-2">
-            {[40, 65, 55, 80, 70, 90, 85, 100].map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                <div className="w-full bg-emerald-600 rounded-t-lg group-hover:bg-emerald-700 transition-all" style={{ height: `${h}%` }} />
-                <span className="text-[10px] text-gray-400 font-medium">W{i + 1}</span>
+            {loading ? (
+              <div className="w-full flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
               </div>
-            ))}
+            ) : (
+              (() => {
+                const maxCount = Math.max(...(data?.weeklyData?.map((w) => w.count) || [1]), 1);
+                return data?.weeklyData?.map((item, i) => {
+                  const heightPercent = item.count > 0 ? Math.max(Math.round((item.count / maxCount) * 100), 18) : 8;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative h-full justify-end">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-gray-900 text-white text-[11px] font-semibold py-1 px-2 rounded-lg pointer-events-none whitespace-nowrap z-10 shadow-lg">
+                        {item.count} new {item.count === 1 ? "property" : "properties"}
+                      </div>
+                      <div
+                        className={`w-full rounded-t-lg transition-all ${
+                          item.count > 0 ? "bg-emerald-600 group-hover:bg-emerald-700 shadow-sm" : "bg-emerald-200/50"
+                        }`}
+                        style={{ height: `${heightPercent}%` }}
+                      />
+                      <span className="text-[10px] text-gray-400 font-medium">{item.label}</span>
+                    </div>
+                  );
+                });
+              })()
+            )}
           </div>
         </div>
 

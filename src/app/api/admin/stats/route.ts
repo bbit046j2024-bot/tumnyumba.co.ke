@@ -9,12 +9,36 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const now = new Date();
+
+    // Generate date ranges for the last 8 weeks
+    const weeklyDataPromises = Array.from({ length: 8 }).map(async (_, index) => {
+      const weekOffset = 7 - index;
+      const weekStart = new Date(now.getTime() - (weekOffset + 1) * 7 * 24 * 60 * 60 * 1000);
+      const weekEnd = new Date(now.getTime() - weekOffset * 7 * 24 * 60 * 60 * 1000);
+
+      const count = await prisma.property.count({
+        where: {
+          createdAt: {
+            gte: weekStart,
+            lt: weekEnd,
+          },
+        },
+      });
+
+      return {
+        label: `W${index + 1}`,
+        count,
+      };
+    });
+
     const [
       totalProperties,
       totalPartners,
       totalStudents,
       recentProperties,
       partnerApplications,
+      weeklyData,
     ] = await Promise.all([
       prisma.property.count(),
       prisma.partnerProfile.count({ where: { status: { in: ["APPROVED", "VERIFIED"] } } }),
@@ -37,6 +61,7 @@ export async function GET() {
           user: { select: { name: true, email: true } },
         },
       }),
+      Promise.all(weeklyDataPromises),
     ]);
 
     return NextResponse.json({
@@ -45,6 +70,7 @@ export async function GET() {
       totalStudents,
       recentProperties,
       partnerApplications,
+      weeklyData,
     });
   } catch (error) {
     console.error("[GET /api/admin/stats]", error);
