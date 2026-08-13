@@ -28,8 +28,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!passwordMatch) return null;
 
-        // Block unverified accounts
-        if (!user.emailVerified) {
+        // Block unverified accounts (except ADMINs)
+        if (user.role !== "ADMIN" && !user.emailVerified) {
           throw new Error("EMAIL_NOT_VERIFIED");
         }
 
