@@ -46,6 +46,10 @@ interface PropertyDetail {
   mapUrl: string | null;
   contactPerson?: string | null;
   contactPhone?: string | null;
+  leadFee?: number;
+  effectiveLeadFee?: number;
+  totalSpaces?: number;
+  availableSpaces?: number;
   images: { id: string; url: string; isPrimary: boolean }[];
   hasLead?: boolean;
   partner: {
@@ -75,6 +79,12 @@ export default function ListingDetailClient() {
   const [interestSubmitted, setInterestSubmitted] = useState(false);
   const [interestError, setInterestError] = useState("");
 
+  // M-PESA Payment Modal State
+  const [showMpesaModal, setShowMpesaModal] = useState(false);
+  const [mpesaPhone, setMpesaPhone] = useState("");
+  const [mpesaLoading, setMpesaLoading] = useState(false);
+  const [mpesaMessage, setMpesaMessage] = useState("");
+
   useEffect(() => {
     if (!propertyId) return;
     fetch(`/api/properties/${propertyId}`)
@@ -93,11 +103,7 @@ export default function ListingDetailClient() {
       .finally(() => setLoading(false));
   }, [propertyId]);
 
-  const handleExpressInterest = async () => {
-    if (!session) {
-      router.push(`/auth/login?next=/listings/${propertyId}`);
-      return;
-    }
+  const submitLeadDirectly = async () => {
     setInterestLoading(true);
     setInterestError("");
     try {
@@ -108,7 +114,7 @@ export default function ListingDetailClient() {
       });
       if (res.ok || res.status === 200) {
         setInterestSubmitted(true);
-        // Refetch property to get unlocked contact info (phone & email)
+        setShowMpesaModal(false);
         const updated = await fetch(`/api/properties/${propertyId}`).then((r) => r.json());
         if (updated) setProperty(updated);
       } else {
@@ -119,6 +125,60 @@ export default function ListingDetailClient() {
       setInterestError("Network error. Please try again.");
     } finally {
       setInterestLoading(false);
+    }
+  };
+
+  const handleExpressInterest = async () => {
+    if (!session) {
+      router.push(`/auth/login?next=/listings/${propertyId}`);
+      return;
+    }
+
+    const fee = property?.effectiveLeadFee ?? 0;
+    // If effective lead fee > 0 (and NOT hostel), show M-PESA payment prompt
+    if (fee > 0 && property?.category !== "HOSTEL") {
+      setShowMpesaModal(true);
+      setMpesaMessage("");
+    } else {
+      // 0 KES lead fee or Hostel: submit lead directly without prompt!
+      await submitLeadDirectly();
+    }
+  };
+
+  const handlePayMpesa = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mpesaPhone.trim()) {
+      setMpesaMessage("Please enter your M-PESA phone number.");
+      return;
+    }
+    setMpesaLoading(true);
+    setMpesaMessage("");
+    try {
+      const res = await fetch("/api/mpesa/stkpush", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          propertyId,
+          phone: mpesaPhone,
+          amount: property?.effectiveLeadFee || 50,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMpesaMessage(data.error || "STK Push failed. Please try again.");
+        setMpesaLoading(false);
+        return;
+      }
+
+      setMpesaMessage(data.message || "STK Push sent. Unlocking contact details...");
+      // Complete lead creation and unlock contact details
+      setTimeout(async () => {
+        await submitLeadDirectly();
+        setMpesaLoading(false);
+      }, 1500);
+    } catch {
+      setMpesaMessage("Network error during M-PESA payment. Please try again.");
+      setMpesaLoading(false);
     }
   };
 
@@ -221,7 +281,7 @@ export default function ListingDetailClient() {
             </div>
 
             {/* Key Highlights */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
               <div>
                 <span className="text-xs text-gray-400 font-medium">Monthly Rent</span>
                 <p className="font-poppins font-bold text-lg text-primary-700">KSh {property.rent.toLocaleString()}</p>
@@ -235,10 +295,16 @@ export default function ListingDetailClient() {
                 <p className="font-poppins font-bold text-base text-gray-800">{categoryLabels[property.category] || property.category}</p>
               </div>
               <div>
+                <span className="text-xs text-gray-400 font-medium">Spaces Left</span>
+                <p className={`font-poppins font-bold text-base ${property.availableSpaces && property.availableSpaces > 0 ? "text-emerald-700" : "text-red-600"}`}>
+                  {property.availableSpaces && property.availableSpaces > 0 ? `${property.availableSpaces} ${property.availableSpaces === 1 ? "Space" : "Spaces"}` : "Fully Booked"}
+                </p>
+              </div>
+              <div>
                 <span className="text-xs text-gray-400 font-medium">Status</span>
-                <p className={`font-poppins font-bold text-base flex items-center gap-1 ${property.availabilityStatus === "AVAILABLE" ? "text-emerald-600" : "text-amber-600"}`}>
-                  <span className={`w-2 h-2 rounded-full ${property.availabilityStatus === "AVAILABLE" ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}`} />
-                  {property.availabilityStatus === "AVAILABLE" ? "Available" : "Taken"}
+                <p className={`font-poppins font-bold text-base flex items-center gap-1 ${property.availabilityStatus === "AVAILABLE" && (property.availableSpaces === undefined || property.availableSpaces > 0) ? "text-emerald-600" : "text-amber-600"}`}>
+                  <span className={`w-2 h-2 rounded-full ${property.availabilityStatus === "AVAILABLE" && (property.availableSpaces === undefined || property.availableSpaces > 0) ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}`} />
+                  {property.availabilityStatus === "AVAILABLE" && (property.availableSpaces === undefined || property.availableSpaces > 0) ? "Available" : "Taken"}
                 </p>
               </div>
             </div>
@@ -393,6 +459,93 @@ export default function ListingDetailClient() {
             </div>
           </aside>
         </div>
+
+        {/* M-PESA Payment Modal */}
+        {showMpesaModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-green-500 text-white font-bold flex items-center justify-center text-xs">
+                    M
+                  </div>
+                  <h3 className="font-poppins font-bold text-gray-900 text-base">
+                    M-PESA Lead Connection Payment
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowMpesaModal(false)}
+                  className="text-gray-400 hover:text-gray-600 text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
+                <div className="flex justify-between items-center text-xs font-semibold text-emerald-900">
+                  <span>Property Lead Fee:</span>
+                  <span className="text-base text-emerald-700 font-bold">
+                    KSh {property.effectiveLeadFee || 50}
+                  </span>
+                </div>
+                <p className="text-[11px] text-emerald-700">
+                  Enter your Safaricom M-PESA registered number below to receive an instant STK PIN prompt.
+                </p>
+              </div>
+
+              <form onSubmit={handlePayMpesa} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    M-PESA Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="0712345678 or 254712345678"
+                    value={mpesaPhone}
+                    onChange={(e) => setMpesaPhone(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                {mpesaMessage && (
+                  <p
+                    className={`text-xs p-3 rounded-xl ${
+                      mpesaMessage.includes("STK Push sent") || mpesaMessage.includes("Unlocking")
+                        ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                        : "bg-red-50 text-red-700 border border-red-200"
+                    }`}
+                  >
+                    {mpesaMessage}
+                  </p>
+                )}
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowMpesaModal(false)}
+                    className="flex-1 py-3 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={mpesaLoading}
+                    className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 disabled:opacity-60"
+                  >
+                    {mpesaLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Sending STK...
+                      </>
+                    ) : (
+                      `Pay KSh ${property.effectiveLeadFee || 50} via M-PESA`
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />

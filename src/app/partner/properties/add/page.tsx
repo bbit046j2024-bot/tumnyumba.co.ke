@@ -38,6 +38,8 @@ export default function AddPropertyPage() {
   const [longitude, setLongitude] = useState<number | null>(null);
   const [mapUrl, setMapUrl] = useState("");
 
+  const [totalSpaces, setTotalSpaces] = useState("1");
+  const [availableSpaces, setAvailableSpaces] = useState("1");
   const [amenities, setAmenities] = useState({
     wifi: false, water: false, electricity: false, parking: false, security: false,
   });
@@ -97,7 +99,7 @@ export default function AddPropertyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title, category, rent, deposit, county, subcounty, area,
-          contactPerson, contactPhone,
+          contactPerson, contactPhone, totalSpaces, availableSpaces,
           description, availabilityStatus: availability, autoRelist, amenities,
           latitude, longitude, mapUrl,
           images: images.map(({ url, publicId }) => ({ url, publicId })),
@@ -167,6 +169,44 @@ export default function AddPropertyPage() {
           <div>
             <label className="input-label">Deposit (KSh)</label>
             <input type="number" placeholder="6000" value={deposit} onChange={(e) => setDeposit(e.target.value)} className="input" required />
+          </div>
+        </div>
+
+        {/* Accommodation Spaces Remaining */}
+        <div className="p-5 bg-emerald-50/60 rounded-2xl border border-emerald-200/70 space-y-3">
+          <div>
+            <h3 className="font-poppins font-bold text-sm text-emerald-900">
+              Hostel & Accommodation Capacity
+            </h3>
+            <p className="text-xs text-emerald-700 mt-0.5">
+              Specify how many total rooms/spaces exist and how many are currently available for students.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="input-label text-xs">Total Capacity / Rooms</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="10"
+                value={totalSpaces}
+                onChange={(e) => setTotalSpaces(e.target.value)}
+                className="input bg-white text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label className="input-label text-xs">Currently Available Spaces</label>
+              <input
+                type="number"
+                min="0"
+                placeholder="5"
+                value={availableSpaces}
+                onChange={(e) => setAvailableSpaces(e.target.value)}
+                className="input bg-white text-sm"
+                required
+              />
+            </div>
           </div>
         </div>
 

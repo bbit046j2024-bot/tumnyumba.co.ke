@@ -17,6 +17,9 @@ interface Property {
   county: string;
   rent: number;
   deposit: number;
+  leadFee?: number;
+  totalSpaces?: number;
+  availableSpaces?: number;
   description?: string;
   verificationStatus: string;
   availabilityStatus: string;
@@ -50,6 +53,13 @@ export default function AdminPropertiesPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  // Edit Lead Fee & Spaces modal state
+  const [editModalProp, setEditModalProp] = useState<Property | null>(null);
+  const [editLeadFee, setEditLeadFee] = useState<number>(0);
+  const [editTotalSpaces, setEditTotalSpaces] = useState<number>(1);
+  const [editAvailableSpaces, setEditAvailableSpaces] = useState<number>(1);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const fetchProperties = useCallback(async () => {
     setLoading(true);
@@ -118,6 +128,48 @@ export default function AdminPropertiesPage() {
       if (res.ok) setProperties((prev) => prev.filter((p) => p.id !== id));
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const openEditModal = (prop: Property) => {
+    setEditModalProp(prop);
+    setEditLeadFee(prop.category === "HOSTEL" ? 0 : (prop.leadFee || 0));
+    setEditTotalSpaces(prop.totalSpaces ?? 1);
+    setEditAvailableSpaces(prop.availableSpaces ?? 1);
+  };
+
+  const savePropSettings = async () => {
+    if (!editModalProp) return;
+    setSavingSettings(true);
+    try {
+      const res = await fetch(`/api/admin/properties/${editModalProp.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadFee: editModalProp.category === "HOSTEL" ? 0 : editLeadFee,
+          totalSpaces: editTotalSpaces,
+          availableSpaces: editAvailableSpaces,
+        }),
+      });
+      if (res.ok) {
+        setProperties((prev) =>
+          prev.map((p) =>
+            p.id === editModalProp.id
+              ? {
+                  ...p,
+                  leadFee: editModalProp.category === "HOSTEL" ? 0 : editLeadFee,
+                  totalSpaces: editTotalSpaces,
+                  availableSpaces: editAvailableSpaces,
+                }
+              : p
+          )
+        );
+        setEditModalProp(null);
+      }
+    } catch {
+      alert("Failed to save settings.");
+    } finally {
+      setSavingSettings(false);
     }
   };
 
@@ -201,6 +253,7 @@ export default function AdminPropertiesPage() {
                   <th className="p-4">Property</th>
                   <th className="p-4">Category</th>
                   <th className="p-4">Rent</th>
+                  <th className="p-4">Lead Fee & Spaces</th>
                   <th className="p-4">Partner</th>
                   <th className="p-4">Status</th>
                   <th className="p-4">Stats</th>
@@ -242,6 +295,31 @@ export default function AdminPropertiesPage() {
                       {/* Rent */}
                       <td className="p-4 font-bold text-emerald-700 font-poppins whitespace-nowrap">
                         KSh {item.rent.toLocaleString()}
+                      </td>
+
+                      {/* Lead Fee & Spaces */}
+                      <td className="p-4">
+                        <div className="space-y-1">
+                          {item.category === "HOSTEL" ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                              Hostel (0 KSh Exempt)
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => openEditModal(item)}
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors ${
+                                item.leadFee && item.leadFee > 0
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
+                                  : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100"
+                              }`}
+                            >
+                              {item.leadFee && item.leadFee > 0 ? `KSh ${item.leadFee} Fee` : "Free / 0 KSh"} ✎
+                            </button>
+                          )}
+                          <div className="text-[11px] text-gray-500 font-medium">
+                            {item.availableSpaces ?? 1} / {item.totalSpaces ?? 1} spaces left
+                          </div>
+                        </div>
                       </td>
 
                       {/* Partner */}
@@ -330,7 +408,7 @@ export default function AdminPropertiesPage() {
                 })}
                 {properties.length === 0 && !loading && (
                   <tr>
-                    <td colSpan={7} className="p-12 text-center text-gray-400 text-sm">
+                    <td colSpan={8} className="p-12 text-center text-gray-400 text-sm">
                       No properties found.
                     </td>
                   </tr>
@@ -340,6 +418,101 @@ export default function AdminPropertiesPage() {
           </div>
         )}
       </div>
+
+      {/* Admin Modal to Edit Lead Fee & Spaces */}
+      {editModalProp && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-poppins font-bold text-gray-900 text-base">
+                Edit Lead Fee & Spaces Configuration
+              </h3>
+              <button
+                onClick={() => setEditModalProp(null)}
+                className="text-gray-400 hover:text-gray-600 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs text-gray-500 font-medium">Property Title:</p>
+              <p className="text-sm font-bold text-gray-900">{editModalProp.title}</p>
+              <p className="text-xs text-primary-700 font-semibold">
+                Category: {CATEGORY_LABELS[editModalProp.category] || editModalProp.category}
+              </p>
+            </div>
+
+            {editModalProp.category === "HOSTEL" ? (
+              <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl text-purple-800 text-xs font-semibold">
+                ℹ Hostels are automatically zero-rated (0 KSh lead fee). No student payment prompt will be displayed.
+              </div>
+            ) : (
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Admin Lead Fee Amount (KSh)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="10"
+                  value={editLeadFee}
+                  onChange={(e) => setEditLeadFee(parseInt(e.target.value) || 0)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-600"
+                />
+                <p className="text-[11px] text-gray-400 mt-1">
+                  Set to 0 for Free connection (no M-PESA prompt). If &gt; 0, students must pay this amount via M-PESA to express interest.
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Available Spaces
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editAvailableSpaces}
+                  onChange={(e) => setEditAvailableSpaces(parseInt(e.target.value) || 0)}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Total Capacity
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={editTotalSpaces}
+                  onChange={(e) => setEditTotalSpaces(parseInt(e.target.value) || 1)}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setEditModalProp(null)}
+                className="flex-1 py-2.5 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={savePropSettings}
+                disabled={savingSettings}
+                className="flex-1 py-2.5 bg-primary-700 hover:bg-primary-800 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-md disabled:opacity-60"
+              >
+                {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -125,6 +125,8 @@ export default function Footer() {
                 { label: "Listings", href: "/listings" },
                 { label: "How It Works", href: "/how-it-works" },
                 { label: "About Us", href: "/about" },
+                { label: "Terms of Service", href: "/terms" },
+                { label: "Privacy Policy", href: "/privacy" },
                 { label: "Contact", href: "/contact" },
               ].map((item) => (
                 <li key={item.label}>

@@ -13,6 +13,7 @@ interface PropertyCardProps {
   amenities?: { wifi?: boolean; water?: boolean; parking?: boolean; security?: boolean };
   verified?: boolean;
   featured?: boolean;
+  availableSpaces?: number;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -35,6 +36,7 @@ export default function PropertyCard({
   amenities,
   verified = false,
   featured = false,
+  availableSpaces,
 }: PropertyCardProps) {
   return (
     <Link href={`/listings/${id}`}>
@@ -60,6 +62,11 @@ export default function PropertyCard({
             {featured && (
               <span className="bg-[#FDF1DE] text-[#D98A1F] text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs">
                 <Star className="w-3.5 h-3.5 fill-[#D98A1F]" /> Featured
+              </span>
+            )}
+            {typeof availableSpaces === "number" && (
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-full shadow-xs ${availableSpaces > 0 ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-600 border border-red-200"}`}>
+                {availableSpaces > 0 ? `${availableSpaces} ${availableSpaces === 1 ? "Space" : "Spaces"} Left` : "Fully Booked"}
               </span>
             )}
           </div>

@@ -93,6 +93,8 @@ export async function PATCH(
     if (body.description !== undefined) updateData.description = body.description;
     if (body.availabilityStatus !== undefined) updateData.availabilityStatus = body.availabilityStatus;
     if (body.autoRelist !== undefined) updateData.autoRelist = body.autoRelist;
+    if (body.totalSpaces !== undefined) updateData.totalSpaces = parseInt(body.totalSpaces) || 1;
+    if (body.availableSpaces !== undefined) updateData.availableSpaces = parseInt(body.availableSpaces) || 0;
     if (body.latitude !== undefined) updateData.latitude = body.latitude ? parseFloat(body.latitude) : null;
     if (body.longitude !== undefined) updateData.longitude = body.longitude ? parseFloat(body.longitude) : null;
     if (body.mapUrl !== undefined) updateData.mapUrl = body.mapUrl || null;

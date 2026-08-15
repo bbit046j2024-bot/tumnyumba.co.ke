@@ -73,7 +73,9 @@ export async function POST(req: NextRequest) {
         contactPhone: body.contactPhone || null,
         description: body.description,
         availabilityStatus: body.availabilityStatus || "AVAILABLE",
-        autoRelist: body.autoRelist || false,
+        totalSpaces: body.totalSpaces ? parseInt(body.totalSpaces) : 1,
+        availableSpaces: body.availableSpaces !== undefined ? parseInt(body.availableSpaces) : 1,
+        leadFee: 0, // Defaults to 0 KES until specified by Admin
         wifi: body.amenities?.wifi || false,
         water: body.amenities?.water || false,
         electricity: body.amenities?.electricity || false,

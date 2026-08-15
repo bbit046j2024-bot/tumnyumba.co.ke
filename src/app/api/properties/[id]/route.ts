@@ -56,10 +56,16 @@ export async function GET(
       },
     };
 
+    const effectiveLeadFee = property.category === "HOSTEL" ? 0 : (property.leadFee || 0);
+
     return NextResponse.json({
       ...rest,
       partner: safePartner,
       hasLead,
+      leadFee: property.leadFee || 0,
+      effectiveLeadFee,
+      totalSpaces: property.totalSpaces ?? 1,
+      availableSpaces: property.availableSpaces ?? 1,
       // Only release contact if student has expressed interest AND partner filled the property contact field
       ...(hasLead && {
         contactPhone: contactPhone || null,

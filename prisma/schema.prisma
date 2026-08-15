@@ -146,6 +146,9 @@ model Property {
   autoRelist         Boolean            @default(false)
   views              Int                @default(0)
   featured           Boolean            @default(false)
+  leadFee            Int                @default(0)
+  totalSpaces        Int                @default(1)
+  availableSpaces    Int                @default(1)
 
   // Amenities
   wifi        Boolean @default(false)

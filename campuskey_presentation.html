@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusKey — Investor & Partner Presentation Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-card: rgba(22, 30, 49, 0.75);
+      --border-card: rgba(255, 255, 255, 0.1);
+      --accent-emerald: #10b981;
+      --accent-teal: #14b8a6;
+      --accent-blue: #3b82f6;
+      --accent-gradient: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .slide-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Screen Slide Deck Controls */
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 3rem 5rem;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+      transform: translateY(10px);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-card);
+      padding-bottom: 1rem;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .slide-title {
+      font-size: 2.75rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      max-width: 800px;
+    }
+
+    /* Cards & Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 0.75rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-icon.emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Title Slide Specifics */
+    .hero-slide {
+      text-align: center;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      max-width: 850px;
+      margin: 0 auto 3rem auto;
+      line-height: 1.5;
+    }
+
+    .hero-pills {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.6rem 1.25rem;
+      border-radius: 9999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Stats Box */
+    .stat-box {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-number {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: #34d399;
+      margin-bottom: 0.25rem;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Bottom Navigation Bar */
+    .deck-nav {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-card);
+      padding: 0.6rem 1.5rem;
+      border-radius: 9999px;
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-emerald);
+      color: #000;
+    }
+
+    .nav-counter {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* PRINT TO PDF STYLES */
+    @media print {
+      body {
+        background-color: #0b0f19 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .deck-nav {
+        display: none !important;
+      }
+      .deck-container {
+        height: auto !important;
+        width: 100% !important;
+        display: block !important;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
+        position: relative !important;
+        width: 100% !important;
+        height: 100vh !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        padding: 3rem !important;
+        justify-content: center !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck-container">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide hero-slide active" id="slide-1">
+    <div class="brand-logo" style="font-size: 2rem; margin-bottom: 1.5rem;">
+      <i data-lucide="key"></i> CampusKey
+    </div>
+    <h1 class="hero-title">The Future of <span class="gradient-text">Student Housing</span> in Kenya</h1>
+    <p class="hero-subtitle">Connecting tertiary students directly with verified property owners via a transparent, map-based, pay-per-lead marketplace.</p>
+    <div class="hero-pills">
+      <div class="pill"><i data-lucide="shield-check" style="color:#34d399"></i> Verified Landlords</div>
+      <div class="pill"><i data-lucide="map-pin" style="color:#60a5fa"></i> Proximity Map Search</div>
+      <div class="pill"><i data-lucide="message-square" style="color:#f472b6"></i> Real-Time Chat</div>
+      <div class="pill"><i data-lucide="smartphone" style="color:#fbbf24"></i> M-PESA Integrated</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: The Problem -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div class="brand-logo"><i data-lucide="key"></i> CampusKey</div>
+      <div class="slide-badge">Market Frictions</div>
+    </div>
+    <h2 class="slide-title">The Off-Campus Housing Crisis</h2>
+    <p class="slide-subtitle">Over 70% of university students in Kenya live off-campus, facing severe security and economic friction.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon" style="background:rgba(239,68,68,0.15); color:#f87171">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <h3 class="card-title">Middleman Exploitation</h3>
+        <p class="card-desc">Unregulated brokers charge steep viewing fees and deposits with zero guarantee of property authenticity or safety.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon" style="background:rgba(245,158,11,0.15); color:#fbbf24">
+          <i data-lucide="navigation-off"></i>
+        </div>
+        <h3 class="card-title">Geographic Friction</h3>
+        <p class="card-desc">Students waste days walking around campus zones (Tudor, Buxton, Kisauni) trying to find vacant bedsitters and single rooms.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon" style="background:rgba(239,68,68,0.15); color:#f87171">
+          <i data-lucide="trending-down"></i>
+        </div>
+        <h3 class="card-title">Landlord Vacancy Losses</h3>
+        <p class="card-desc">Property owners rely on outdated signposts, leading to vacant units and lost rental income during semester starts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: The Solution -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div class="brand-logo"><i data-lucide="key"></i> CampusKey</div>
+      <div class="slide-badge">The Platform</div>
+    </div>
+    <h2 class="slide-title">The CampusKey Solution</h2>
+    <p class="slide-subtitle">A trust-first digital marketplace bringing transparency, security, and speed to tertiary student accommodation.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon emerald"><i data-lucide="shield-check"></i></div>
+        <h3 class="card-title">Verified Listings</h3>
+        <p class="card-desc">Landlord identity and business permit checks eliminate fraudulent broker posts and build tenant confidence.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i data-lucide="map"></i></div>
+        <h3 class="card-title">Proximity Map Filtering</h3>
+        <p class="card-desc">Students search by exact distance to campus gates, price, deposit, and student utilities (WiFi, Water, Token Electricity).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon emerald"><i data-lucide="zap"></i></div>
+        <h3 class="card-title">Instant Realtime Chat</h3>
+        <p class="card-desc">Direct tenant-to-landlord communication powered by WebSockets, facilitating fast inquiries and instant bookings.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Monetization & Business Model -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div class="brand-logo"><i data-lucide="key"></i> CampusKey</div>
+      <div class="slide-badge">Unit Economics</div>
+    </div>
+    <h2 class="slide-title">Monetization & Business Model</h2>
+    <p class="slide-subtitle">Performance-driven revenue stream built for high partner retention and friction-free monetization.</p>
+
+    <div class="grid-2" style="margin-bottom: 2rem;">
+      <div class="card" style="border-left: 4px solid #10b981;">
+        <h3 class="card-title" style="color: #34d399;">Pay-Per-Lead (Primary Engine)</h3>
+        <p class="card-desc" style="font-size: 1.1rem; margin-bottom: 1rem;">Landlords pay <strong>KES 50</strong> per verified student inquiry generated through the platform.</p>
+        <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; line-height: 1.7;">
+          <li>Zero upfront listing costs for property owners.</li>
+          <li>Automated invoice generation & balance statements.</li>
+          <li>Instant M-PESA payment integration.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-left: 4px solid #3b82f6;">
+        <h3 class="card-title" style="color: #60a5fa;">Featured Promotions (Secondary Engine)</h3>
+        <p class="card-desc" style="font-size: 1.1rem; margin-bottom: 1rem;">Premium visibility options for property management companies during peak intake.</p>
+        <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; line-height: 1.7;">
+          <li>Top placement on landing page & category searches.</li>
+          <li>High-conversion badging for premier hostels.</li>
+          <li>Ancillary student services (WiFi, Moving, HELB assistance).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-box">
+        <div class="stat-number">KES 50</div>
+        <div class="stat-label">Fee Per Student Lead</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">0 KES</div>
+        <div class="stat-label">Upfront Landlord Cost</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Performance Billing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Technology & Security Stack -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div class="brand-logo"><i data-lucide="key"></i> CampusKey</div>
+      <div class="slide-badge">Tech Architecture</div>
+    </div>
+    <h2 class="slide-title">Enterprise Tech & Resilience</h2>
+    <p class="slide-subtitle">Built on modern, scalable, high-performance web architecture.</p>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-icon"><i data-lucide="code-2"></i></div>
+        <h3 class="card-title">Next.js 16</h3>
+        <p class="card-desc">React 19 App Router server rendering for sub-second page loads and optimal SEO.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon emerald"><i data-lucide="database"></i></div>
+        <h3 class="card-title">MySQL & Prisma</h3>
+        <p class="card-desc">Indexed query engine tuned for high-concurrency property search & leads.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i data-lucide="wifi"></i></div>
+        <h3 class="card-title">Pusher WS</h3>
+        <p class="card-desc">Realtime WebSocket messaging engine for instant landlord-tenant communication.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon emerald"><i data-lucide="credit-card"></i></div>
+        <h3 class="card-title">M-PESA & Cloudinary</h3>
+        <p class="card-desc">Integrated mobile payments and global CDN image delivery.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Expansion & Growth Roadmap -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <div class="brand-logo"><i data-lucide="key"></i> CampusKey</div>
+      <div class="slide-badge">Growth Strategy</div>
+    </div>
+    <h2 class="slide-title">Market Opportunity & Expansion</h2>
+    <p class="slide-subtitle">Scaling from coastal university hubs to nationwide tertiary coverage across Kenya.</p>
+
+    <div class="grid-3" style="margin-bottom: 2rem;">
+      <div class="card">
+        <div class="card-badge" style="color:#34d399; font-weight:700; font-size:0.8rem; text-transform:uppercase;">Phase 1: Coastal Hub</div>
+        <h3 class="card-title" style="margin-top:0.5rem;">TUM & Mombasa</h3>
+        <p class="card-desc">Dominating Technical University of Mombasa, Tudor, Kisauni, Buxton, Nyali, and Makande zones.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-badge" style="color:#60a5fa; font-weight:700; font-size:0.8rem; text-transform:uppercase;">Phase 2: Regional Expansion</div>
+        <h3 class="card-title" style="margin-top:0.5rem;">Kilifi & Extra-County</h3>
+        <p class="card-desc">Expanding to Pwani University (Kilifi), KU Mombasa Campus, and USIU Coastal Learning Centers.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-badge" style="color:#c084fc; font-weight:700; font-size:0.8rem; text-transform:uppercase;">Phase 3: National Scale</div>
+        <h3 class="card-title" style="margin-top:0.5rem;">Nairobi & Upcountry</h3>
+        <p class="card-desc">Deploying across University of Nairobi, Kenyatta University, Strathmore, and Juja student corridors.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Call to Action -->
+  <div class="slide hero-slide" id="slide-7">
+    <div class="brand-logo" style="font-size: 2.5rem; margin-bottom: 1.5rem;">
+      <i data-lucide="key"></i> CampusKey
+    </div>
+    <h1 class="hero-title">Partner with <span class="gradient-text">CampusKey</span></h1>
+    <p class="hero-subtitle">Join us in digitizing student housing across Kenya. Whether you are a property owner, investor, or institutional partner, let's build the future together.</p>
+
+    <div class="hero-pills">
+      <div class="pill" style="background:var(--accent-gradient); color:white; border:none; padding:0.8rem 2rem; font-size:1.1rem; cursor:pointer;" onclick="window.print()">
+        <i data-lucide="printer"></i> Print / Save as PDF
+      </div>
+      <div class="pill" style="padding:0.8rem 2rem; font-size:1.1rem;">
+        <i data-lucide="globe"></i> campuskey.co.ke
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation Bar -->
+<div class="deck-nav">
+  <button class="nav-btn" onclick="prevSlide()"><i data-lucide="chevron-left"></i></button>
+  <span class="nav-counter" id="slide-counter">1 / 7</span>
+  <button class="nav-btn" onclick="nextSlide()"><i data-lucide="chevron-right"></i></button>
+  <button class="print-btn" onclick="window.print()"><i data-lucide="download"></i> Save PDF</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 7;
+
+  function showSlide(index) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`slide-${index}`);
+    if (target) {
+      target.classList.add('active');
+      document.getElementById('slide-counter').innerText = `${index} / ${totalSlides}`;
+    }
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) {
+      currentSlide++;
+      showSlide(currentSlide);
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) {
+      currentSlide--;
+      showSlide(currentSlide);
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
