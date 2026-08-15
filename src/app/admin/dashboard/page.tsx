@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
     },
     {
       label: "Revenue (Est.)",
-      value: data ? `KSh ${(data.totalPartners * 50 * 10).toLocaleString()}` : "—",
+      value: data ? `KSh 0` : "—",
       change: "Based on lead fees",
       icon: DollarSign,
       color: "bg-[#E4F5EC] text-[#1F9254]",
