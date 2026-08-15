@@ -94,7 +94,7 @@ export async function sendWelcomeEmail(to: string, name: string, role: "STUDENT"
     ${para(`Your email has been verified and your ${isPartner ? "partner" : "student"} account is now active.`)}
     ${isPartner
       ? para("Your partner application is under review. Our team will approve it shortly — you'll be notified by email. Once approved you can list your properties.")
-      : para("You can now browse verified student housing near TUM Mombasa, save your favourite listings, and contact property partners directly.")}
+      : para("You can now browse verified student housing in Mombasa, save your favourite listings, and contact property partners directly.")}
     ${btn(isPartner ? `${APP_URL}/partner/dashboard` : `${APP_URL}/listings`, isPartner ? "Go to Partner Dashboard" : "Browse Listings")}
     ${smallNote("Need help? Reply to this email or visit our support page.")}
   `);
