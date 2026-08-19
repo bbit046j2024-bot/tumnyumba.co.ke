@@ -94,14 +94,22 @@ export async function POST(
       });
 
       if (otherParticipants.length > 0) {
-        const textSnippet = body.trim().length > 50 ? body.trim().slice(0, 50) + "..." : body.trim();
+        const senderLabel = session.user.name || (session.user.role === "ADMIN" ? "Admin" : session.user.role === "PARTNER" ? "Property Partner" : "User");
+
         await prisma.notification.createMany({
-          data: otherParticipants.map((p) => ({
-            userId: p.user.id,
-            title: `New Message from ${session.user.name || "User"}`,
-            body: `${session.user.name || "Someone"}: "${textSnippet}"`,
-            link: p.user.role === "ADMIN" ? "/admin/chat" : p.user.role === "PARTNER" ? "/partner/chat" : "/admin/chat",
-          })),
+          data: otherParticipants.map((p) => {
+            const isStudent = p.user.role === "STUDENT";
+            return {
+              userId: p.user.id,
+              title: `Message from ${senderLabel}`,
+              body: `${senderLabel}: "${body.trim()}"`,
+              link: isStudent
+                ? null
+                : p.user.role === "ADMIN"
+                ? "/admin/chat"
+                : "/partner/chat",
+            };
+          }),
         });
 
         // Invalidate recipient notification caches
