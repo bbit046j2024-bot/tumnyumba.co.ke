@@ -390,6 +390,8 @@ export default function ListingDetailClient() {
                 mapUrl={property.mapUrl}
                 title={property.title}
                 area={property.area}
+                subcounty={property.subcounty}
+                county={property.county}
               />
             </div>
 
