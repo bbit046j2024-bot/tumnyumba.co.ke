@@ -48,7 +48,7 @@ export default function PrivacyPage() {
               </h2>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <strong className="text-gray-800">Student Account Data:</strong> Full name, email address, phone number, course of study, and funding context (HELB/Self-funded).
+                  <strong className="text-gray-800">Student Account Data:</strong> Full name, email address and phone number.
                 </li>
                 <li>
                   <strong className="text-gray-800">Partner Account Data:</strong> Company name, contact person name, business phone number, business license number, and property images.

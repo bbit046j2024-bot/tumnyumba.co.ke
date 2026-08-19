@@ -1,8 +1,7 @@
-"use client";
-
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Bell, CheckCheck, Trash2, X, BellOff, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Notification = {
   id: string;
@@ -28,6 +27,7 @@ interface NotificationBellProps {
 }
 
 export default function NotificationBell({ notificationsPageHref }: NotificationBellProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,6 +69,14 @@ export default function NotificationBell({ notificationsPageHref }: Notification
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
+  };
+
+  const handleNotificationClick = async (n: Notification) => {
+    await markOne(n.id);
+    setOpen(false);
+    if (n.link) {
+      router.push(n.link);
+    }
   };
 
   const markAll = async () => {
@@ -150,7 +158,7 @@ export default function NotificationBell({ notificationsPageHref }: Notification
               notifications.map(n => (
                 <button
                   key={n.id}
-                  onClick={() => markOne(n.id)}
+                  onClick={() => handleNotificationClick(n)}
                   className={`w-full text-left px-4 py-3 border-b border-gray-50 transition-colors hover:bg-gray-50 flex gap-3 items-start
                     ${!n.read ? "bg-[#F7FBF8]" : "bg-white"}`}
                 >

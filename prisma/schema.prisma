@@ -68,6 +68,40 @@ enum FundingType {
   WORKING
 }
 
+// ─── BOOKING PAYMENT ENUMS ────────────────────────────────────────────────────
+
+enum PaymentRouting {
+  DIRECT
+  SPLIT
+}
+
+enum CommissionType {
+  PERCENTAGE
+  FIXED
+}
+
+enum BookingStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+enum BookingPaymentStatus {
+  QUEUED
+  PUSHED
+  CONFIRMED
+  FAILED
+  TIMEOUT
+}
+
+enum PayoutStatus {
+  PENDING
+  QUEUED
+  PAID
+  FAILED
+}
+
 // ─── MODELS ───────────────────────────────────────────────────────────────────
 
 model User {
@@ -90,6 +124,7 @@ model User {
   conversations      ConversationParticipant[]
   verificationTokens VerificationToken[]
   passwordResetTokens PasswordResetToken[]
+  bookings           Booking[]
 
   @@map("users")
 }
@@ -118,9 +153,24 @@ model PartnerProfile {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  properties Property[]
-  invoices   Invoice[]
+  // ── Payment routing ────────────────────────────────────────────────────────
+  // All nullable — existing partner rows are unaffected before admin configures them
+  paymentRouting      PaymentRouting  @default(SPLIT)
+  // DIRECT mode only — AES-256-GCM encrypted blobs, never stored as plaintext
+  mpesaShortcode      String?         @db.VarChar(20)
+  mpesaPasskey        Bytes?          @db.VarBinary(512)
+  mpesaConsumerKey    Bytes?          @db.VarBinary(512)
+  mpesaConsumerSecret Bytes?          @db.VarBinary(512)
+  // SPLIT mode only
+  payoutPhone         String?         @db.VarChar(15)
+  commissionType      CommissionType  @default(PERCENTAGE)
+  commissionValue     Decimal         @default(10.00) @db.Decimal(10, 2)
+
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  properties      Property[]
+  invoices        Invoice[]
+  bookings        Booking[]
+  bookingPayments BookingPayment[]
 
   @@map("partner_profiles")
 }
@@ -335,6 +385,57 @@ model Message {
   // Fetched per-conversation thread, ordered by time — composite index is essential
   @@index([conversationId, createdAt(sort: Asc)])
   @@map("messages")
+}
+
+// ─── BOOKING & PAYMENT MODELS ────────────────────────────────────────────────
+
+model Booking {
+  id          String        @id @default(cuid())
+  partnerId   String        // PartnerProfile.id
+  studentId   String        // User.id — phone is always read from User.phone
+  amountDue   Decimal       @db.Decimal(10, 2)
+  amountPaid  Decimal       @default(0) @db.Decimal(10, 2)
+  status      BookingStatus @default(PENDING)
+  description String?       @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  partner  PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  student  User           @relation(fields: [studentId], references: [id])
+  payments BookingPayment[]
+
+  @@index([partnerId])
+  @@index([studentId])
+  @@map("bookings")
+}
+
+model BookingPayment {
+  id                   String               @id @default(cuid())
+  bookingId            String
+  partnerId            String
+  amount               Decimal              @db.Decimal(10, 2)
+  status               BookingPaymentStatus @default(QUEUED)
+  routingMode          PaymentRouting       // snapshot of partner mode at time of payment
+  checkoutRequestId    String?              @unique @db.VarChar(50)
+  mpesaReceiptNumber   String?              @db.VarChar(30)
+
+  // SPLIT mode only — null for DIRECT
+  commissionAmount     Decimal?             @db.Decimal(10, 2)
+  partnerPayoutAmount  Decimal?             @db.Decimal(10, 2)
+  payoutStatus         PayoutStatus?
+  payoutConversationId String?              @db.VarChar(50)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking        @relation(fields: [bookingId], references: [id])
+  partner PartnerProfile @relation(fields: [partnerId], references: [id])
+
+  @@index([bookingId])
+  @@index([partnerId])
+  @@index([checkoutRequestId])
+  @@index([payoutConversationId])
+  @@map("booking_payments")
 }
 
 // ─── EMAIL VERIFICATION & PASSWORD RESET ──────────────────────────────────────

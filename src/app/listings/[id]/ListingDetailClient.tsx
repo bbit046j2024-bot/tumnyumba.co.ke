@@ -17,9 +17,11 @@ const PropertyMap = dynamic(() => import("@/components/map/PropertyMap"), {
     </div>
   ),
 });
+import PayButton from "@/components/payments/PayButton";
 import {
   MapPin, Bed, Wifi, Shield, CheckCircle2, Phone, MessageSquare, Mail,
-  ArrowLeft, Share2, Heart, Loader2, Zap, Droplet, Car, Lock, Building
+  ArrowLeft, Share2, Heart, Loader2, Zap, Droplet, Car, Lock, Building,
+  CreditCard, Sparkles, X
 } from "lucide-react";
 
 interface PropertyDetail {
@@ -79,7 +81,13 @@ export default function ListingDetailClient() {
   const [interestSubmitted, setInterestSubmitted] = useState(false);
   const [interestError, setInterestError] = useState("");
 
-  // M-PESA Payment Modal State
+  // Direct Booking & Full Rent+Deposit M-Pesa Payment State
+  const [showDirectPayModal, setShowDirectPayModal] = useState(false);
+  const [directBooking, setDirectBooking] = useState<any | null>(null);
+  const [directBookingLoading, setDirectBookingLoading] = useState(false);
+  const [directBookingError, setDirectBookingError] = useState("");
+
+  // M-PESA Lead Modal State
   const [showMpesaModal, setShowMpesaModal] = useState(false);
   const [mpesaPhone, setMpesaPhone] = useState("");
   const [mpesaLoading, setMpesaLoading] = useState(false);
@@ -125,6 +133,37 @@ export default function ListingDetailClient() {
       setInterestError("Network error. Please try again.");
     } finally {
       setInterestLoading(false);
+    }
+  };
+
+  const handleStartDirectBooking = async () => {
+    if (!session) {
+      router.push(`/auth/login?next=/listings/${propertyId}`);
+      return;
+    }
+
+    setDirectBookingLoading(true);
+    setDirectBookingError("");
+    setShowDirectPayModal(true);
+
+    try {
+      const res = await fetch("/api/bookings/instant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setDirectBookingError(data.error || "Failed to create booking.");
+        return;
+      }
+
+      setDirectBooking(data.booking);
+    } catch {
+      setDirectBookingError("Network error initializing booking.");
+    } finally {
+      setDirectBookingLoading(false);
     }
   };
 
@@ -378,22 +417,45 @@ export default function ListingDetailClient() {
                 <p className="text-xs text-gray-400 mt-1">Refundable Deposit: KSh {property.deposit.toLocaleString()}</p>
               </div>
 
-              {/* Interest Action */}
-              {interestError && (
-                <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{interestError}</p>
-              )}
-              {interestSubmitted || property.hasLead ? (
-                <div className="p-4 bg-emerald-50 rounded-xl text-center space-y-2 border border-emerald-200">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-                  <h4 className="font-poppins font-bold text-emerald-900 text-sm">Interest Recorded!</h4>
-                  <p className="text-xs text-emerald-700">Contact details unlocked. You can now reach out to the partner directly below.</p>
-                </div>
-              ) : (
-                <button onClick={handleExpressInterest} disabled={interestLoading || property.availabilityStatus !== "AVAILABLE"} className="w-full btn-primary py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary-700/20 disabled:opacity-60">
-                  {interestLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Building className="w-4 h-4" />}
-                  {property.availabilityStatus !== "AVAILABLE" ? "Currently Unavailable" : session ? "Take / Express Interest" : "Sign In to Express Interest"}
+              {/* Direct Booking & Payment (Rent + Deposit) */}
+              <div className="space-y-2">
+                <button
+                  onClick={handleStartDirectBooking}
+                  disabled={property.availabilityStatus !== "AVAILABLE"}
+                  className="w-full py-3.5 px-4 text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-2 bg-[#1F9254] hover:bg-[#197A46] text-white shadow-lg shadow-emerald-700/20 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+                >
+                  <CreditCard className="w-4 h-4 flex-shrink-0" />
+                  <span>
+                    Book & Pay KSh {(property.rent + property.deposit).toLocaleString()} (Rent + Deposit)
+                  </span>
                 </button>
-              )}
+                <p className="text-[11px] text-gray-400 text-center">
+                  Instant M-Pesa STK Push — locks your room immediately.
+                </p>
+              </div>
+
+              {/* Express Interest / Contact */}
+              <div className="border-t border-gray-100 pt-3 space-y-2">
+                {interestError && (
+                  <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{interestError}</p>
+                )}
+                {interestSubmitted || property.hasLead ? (
+                  <div className="p-4 bg-emerald-50 rounded-xl text-center space-y-2 border border-emerald-200">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                    <h4 className="font-poppins font-bold text-emerald-900 text-sm">Interest Recorded!</h4>
+                    <p className="text-xs text-emerald-700">Contact details unlocked. You can now reach out to the partner directly below.</p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleExpressInterest}
+                    disabled={interestLoading || property.availabilityStatus !== "AVAILABLE"}
+                    className="w-full btn-primary py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary-700/20 disabled:opacity-60"
+                  >
+                    {interestLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Building className="w-4 h-4" />}
+                    {property.availabilityStatus !== "AVAILABLE" ? "Currently Unavailable" : session ? "Take / Express Interest" : "Sign In to Express Interest"}
+                  </button>
+                )}
+              </div>
 
               {/* Partner Info & Gated Contact Details */}
               <div className="pt-4 border-t border-gray-100 space-y-4">
@@ -440,7 +502,7 @@ export default function ListingDetailClient() {
                       </div>
                       <p className="text-[11px] text-gray-500">
                         Click <span className="font-medium text-primary-700">&quot;Take / Express Interest&quot;</span> above to view phone & email.
-      </p>
+                      </p>
                     </div>
                   )}
                 </div>
@@ -459,6 +521,77 @@ export default function ListingDetailClient() {
             </div>
           </aside>
         </div>
+
+        {/* Direct Booking & Full Payment Modal */}
+        {showDirectPayModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-gray-100 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#E4F5EC] text-[#1F6B4A] font-bold flex items-center justify-center">
+                    <CreditCard className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-poppins font-bold text-gray-900 text-base">
+                      Book & Pay Online
+                    </h3>
+                    <p className="text-xs text-gray-500">{property.title}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowDirectPayModal(false)}
+                  className="text-gray-400 hover:text-gray-700 rounded-lg p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100 text-xs">
+                <div className="flex justify-between text-gray-600">
+                  <span>1st Month Rent:</span>
+                  <span className="font-semibold text-gray-900">KSh {property.rent.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Refundable Deposit:</span>
+                  <span className="font-semibold text-gray-900">KSh {property.deposit.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
+                  <span>Total Amount (Rent + Deposit):</span>
+                  <span className="text-[#1F6B4A] font-poppins">
+                    KSh {(property.rent + property.deposit).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              {directBookingLoading ? (
+                <div className="py-12 text-center space-y-2 text-gray-400">
+                  <Loader2 className="w-7 h-7 animate-spin mx-auto text-[#1F6B4A]" />
+                  <p className="text-xs">Preparing your booking and M-Pesa gateway...</p>
+                </div>
+              ) : directBookingError ? (
+                <div className="bg-red-50 text-red-700 p-4 rounded-xl text-xs space-y-2 border border-red-200">
+                  <p className="font-semibold">{directBookingError}</p>
+                  {directBookingError.includes("phone") && (
+                    <Link href="/profile" className="btn-primary text-xs py-1.5 px-3 inline-block">
+                      Update Profile Phone
+                    </Link>
+                  )}
+                </div>
+              ) : directBooking ? (
+                <PayButton
+                  bookingId={directBooking.id}
+                  amountDue={Number(directBooking.amountDue)}
+                  amountPaid={Number(directBooking.amountPaid)}
+                  onPaymentSuccess={() => {
+                    setInterestSubmitted(true);
+                    setTimeout(() => setShowDirectPayModal(false), 3000);
+                  }}
+                />
+              ) : null}
+            </div>
+          </div>
+        )}
 
         {/* M-PESA Payment Modal */}
         {showMpesaModal && (

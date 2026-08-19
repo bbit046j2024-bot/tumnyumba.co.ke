@@ -1,3 +1,6 @@
+// @deprecated — This endpoint handles the legacy listing lead fee STK push.
+// For student booking payments, use POST /api/bookings/[id]/pay instead.
+
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
