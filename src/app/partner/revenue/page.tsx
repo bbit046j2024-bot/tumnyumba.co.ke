@@ -110,11 +110,11 @@ export default function PartnerRevenuePage() {
     setError("");
     try {
       const res = await fetch("/api/partner/revenue/booking-payments");
-      if (!res.ok) throw new Error();
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load booking earnings.");
       setBookingData(data);
-    } catch {
-      setError("Failed to load booking earnings. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Failed to load booking earnings. Please try again.");
     } finally {
       setLoadingBooking(false);
     }
@@ -124,11 +124,11 @@ export default function PartnerRevenuePage() {
     setLoadingLead(true);
     try {
       const res = await fetch("/api/partner/revenue");
-      if (!res.ok) throw new Error();
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load lead fee invoice data.");
       setLeadData(data);
-    } catch {
-      setError("Failed to load lead fee invoice data.");
+    } catch (err: any) {
+      setError(err.message || "Failed to load lead fee invoice data.");
     } finally {
       setLoadingLead(false);
     }

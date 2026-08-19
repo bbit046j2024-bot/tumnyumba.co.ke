@@ -9,12 +9,35 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const partner = await prisma.partnerProfile.findUnique({
+    let partner = await prisma.partnerProfile.findUnique({
       where: { userId: session.user.id },
       select: { id: true, companyName: true, status: true, totalLeadsPaid: true },
     });
+
     if (!partner) {
-      return NextResponse.json({ error: "Partner not found" }, { status: 404 });
+      const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+      if (user) {
+        partner = await prisma.partnerProfile.create({
+          data: {
+            userId: user.id,
+            companyName: user.name || "Partner Business",
+            status: "PENDING",
+          },
+          select: { id: true, companyName: true, status: true, totalLeadsPaid: true },
+        });
+      }
+    }
+
+    if (!partner) {
+      return NextResponse.json({
+        partner: { companyName: "Partner Business", status: "PENDING" },
+        invoices: [],
+        totalLeads: 0,
+        totalPaid: 0,
+        paidLeadsCount: 0,
+        pendingAmount: 0,
+        unpaidLeadsCount: 0,
+      });
     }
 
     const [invoices, totalLeads, paidLeadFees, unpaidLeadFees] = await Promise.all([

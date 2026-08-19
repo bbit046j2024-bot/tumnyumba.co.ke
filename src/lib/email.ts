@@ -77,12 +77,18 @@ export async function sendVerificationEmail(to: string, name: string, token: str
     ${smallNote("If you didn't create a CampusKey account, you can safely ignore this email.")}
   `);
 
-  return resend.emails.send({
+  const res = await resend.emails.send({
     from: FROM,
     to,
     subject: "Verify your CampusKey email address",
     html,
   });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
 }
 
 // ─── 2. Welcome Email ───────────────────────────────────────────────────────
@@ -99,12 +105,18 @@ export async function sendWelcomeEmail(to: string, name: string, role: "STUDENT"
     ${smallNote("Need help? Reply to this email or visit our support page.")}
   `);
 
-  return resend.emails.send({
+  const res = await resend.emails.send({
     from: FROM,
     to,
     subject: `Welcome to CampusKey${isPartner ? " — Application Received" : ""}!`,
     html,
   });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
 }
 
 // ─── 3. Password Reset ──────────────────────────────────────────────────────
@@ -121,12 +133,18 @@ export async function sendPasswordResetEmail(to: string, name: string, token: st
     ${smallNote("If you didn't request a password reset, please ignore this email — your account is safe.")}
   `);
 
-  return resend.emails.send({
+  const res = await resend.emails.send({
     from: FROM,
     to,
     subject: "Reset your CampusKey password",
     html,
   });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
 }
 
 // ─── 4. Booking / Interest Notification (Partner) ──────────────────────────
@@ -150,12 +168,18 @@ export async function sendBookingNotificationToPartner(
     ${smallNote("You're receiving this because you have a listed property on CampusKey.")}
   `);
 
-  return resend.emails.send({
+  const res = await resend.emails.send({
     from: FROM,
     to: partnerEmail,
     subject: `New interest: ${propertyTitle}`,
     html,
   });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
 }
 
 // ─── 5. Booking / Interest Confirmation (Student) ──────────────────────────
@@ -177,10 +201,16 @@ export async function sendBookingConfirmationToStudent(
     ${smallNote("Tip: Make sure your phone number on your profile is up to date so the partner can reach you easily.")}
   `);
 
-  return resend.emails.send({
+  const res = await resend.emails.send({
     from: FROM,
     to: studentEmail,
     subject: `Interest confirmed — ${propertyTitle}`,
     html,
   });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
 }

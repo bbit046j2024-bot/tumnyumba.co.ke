@@ -77,9 +77,12 @@ function LoginForm() {
             {error === "EMAIL_NOT_VERIFIED" ? (
               <span>
                 Please verify your email before signing in.{" "}
-                <a href="/auth/verify-email" className="font-semibold underline">
+                <Link
+                  href={`/auth/verify-email?email=${encodeURIComponent(email)}`}
+                  className="font-semibold underline text-[#1F6B4A]"
+                >
                   Resend verification email
-                </a>
+                </Link>
               </span>
             ) : error}
           </div>

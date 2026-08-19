@@ -30,6 +30,28 @@ export async function GET(req: NextRequest) {
           commissionValue: true,
         },
       });
+
+      // Auto-create PartnerProfile if missing for this PARTNER user
+      if (!partner) {
+        const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+        if (user) {
+          partner = await prisma.partnerProfile.create({
+            data: {
+              userId: user.id,
+              companyName: user.name || "Partner Business",
+              status: "PENDING",
+            },
+            select: {
+              id: true,
+              companyName: true,
+              paymentRouting: true,
+              payoutPhone: true,
+              commissionType: true,
+              commissionValue: true,
+            },
+          });
+        }
+      }
     } else {
       // ADMIN preview
       partner = await prisma.partnerProfile.findFirst({
@@ -45,7 +67,23 @@ export async function GET(req: NextRequest) {
     }
 
     if (!partner) {
-      return NextResponse.json({ error: "Partner profile not found" }, { status: 404 });
+      // Return empty default dataset instead of hard 404 crash
+      return NextResponse.json({
+        partner: {
+          companyName: "Partner Business",
+          paymentRouting: "SPLIT",
+          payoutPhone: null,
+          commissionType: "PERCENTAGE",
+          commissionValue: 10,
+        },
+        summary: {
+          gross: 0,
+          netReceived: 0,
+          pendingPayout: 0,
+          totalConfirmedPayments: 0,
+        },
+        payments: [],
+      });
     }
 
     const confirmedPayments = await prisma.bookingPayment.findMany({
@@ -75,10 +113,8 @@ export async function GET(req: NextRequest) {
       gross += amount;
 
       if (p.routingMode === "DIRECT") {
-        // DIRECT mode: Partner received entire amount directly in till
         netReceived += amount;
       } else {
-        // SPLIT mode: Check payoutStatus
         if (p.payoutStatus === "PAID") {
           netReceived += partnerShare;
         } else if (p.payoutStatus === "PENDING" || p.payoutStatus === "QUEUED") {
@@ -88,7 +124,10 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({
-      partner,
+      partner: {
+        ...partner,
+        commissionValue: Number(partner.commissionValue ?? 10),
+      },
       summary: {
         gross,
         netReceived,
@@ -108,8 +147,8 @@ export async function GET(req: NextRequest) {
         createdAt: p.createdAt,
       })),
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[GET /api/partner/revenue/booking-payments]", error);
-    return NextResponse.json({ error: "Failed to load partner revenue" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Failed to load partner revenue" }, { status: 500 });
   }
 }
