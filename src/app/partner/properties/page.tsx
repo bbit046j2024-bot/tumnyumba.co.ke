@@ -157,7 +157,10 @@ export default function PartnerPropertiesPage() {
                 </div>
                 <div className="flex items-center gap-4 text-sm pt-1">
                   <span className="font-bold text-emerald-700 font-poppins">
-                    KSh {item.rent.toLocaleString()} <span className="text-xs font-normal text-gray-500">/ mo</span>
+                    KSh {item.rent.toLocaleString()}{" "}
+                    <span className="text-xs font-normal text-gray-500">
+                      {item.category === "BNB" ? "/ night" : "/ mo"}
+                    </span>
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium">
                     {categoryLabels[item.category] || item.category}

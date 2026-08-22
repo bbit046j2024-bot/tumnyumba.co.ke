@@ -23,6 +23,7 @@ const categoryLabels: Record<string, string> = {
   TWO_BED: "2 Bedroom",
   HOSTEL: "Hostel",
   SHARED_ROOM: "Shared Room",
+  BNB: "AirBnB / BNB",
 };
 
 export default function PropertyCard({
@@ -86,7 +87,9 @@ export default function PropertyCard({
             <span className="font-poppins font-bold text-xl text-[#1F6B4A]">
               KSh {rent.toLocaleString()}
             </span>
-            <span className="text-[#6B7280] text-sm"> / month</span>
+            <span className="text-[#6B7280] text-sm">
+              {category === "BNB" ? " / night" : " / month"}
+            </span>
           </div>
 
           {/* Title */}

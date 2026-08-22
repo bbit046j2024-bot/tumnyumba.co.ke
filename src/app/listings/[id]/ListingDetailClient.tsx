@@ -97,17 +97,28 @@ export default function ListingDetailClient() {
     if (!propertyId) return;
     fetch(`/api/properties/${propertyId}`)
       .then((r) => {
-        if (r.status === 404) { setNotFound(true); return null; }
+        if (!r.ok) {
+          setNotFound(true);
+          return null;
+        }
         return r.json();
       })
       .then((data) => {
-        if (data) {
+        if (data && !data.error) {
           setProperty(data);
-          const primary = data.images.find((i: { isPrimary: boolean; url: string }) => i.isPrimary)?.url || data.images[0]?.url || "";
+          const primary =
+            data.images?.find((i: { isPrimary: boolean; url: string }) => i.isPrimary)?.url ||
+            data.images?.[0]?.url ||
+            "";
           setActiveImage(primary);
+        } else if (data?.error) {
+          setNotFound(true);
         }
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error("Failed to load listing:", err);
+        setNotFound(true);
+      })
       .finally(() => setLoading(false));
   }, [propertyId]);
 
@@ -293,7 +304,7 @@ export default function ListingDetailClient() {
                 </div>
               </div>
 
-              {property.images.length > 1 && (
+              {property.images && property.images.length > 1 && (
                 <div className="flex items-center gap-3 overflow-x-auto pb-2">
                   {property.images.map((img) => (
                     <button key={img.id} onClick={() => setActiveImage(img.url)} className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${activeImage === img.url ? "border-primary-600 scale-95" : "border-transparent opacity-70 hover:opacity-100"}`}>

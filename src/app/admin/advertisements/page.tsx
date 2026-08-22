@@ -220,7 +220,9 @@ export default function AdminAdvertisementsPage() {
                   <span>•</span>
                   <span><strong>Area:</strong> {property.area}</span>
                   <span>•</span>
-                  <span className="text-[#1F6B4A] font-semibold">KSh {property.rent.toLocaleString()} / mo</span>
+                  <span className="text-[#1F6B4A] font-semibold">
+                    KSh {property.rent.toLocaleString()} {property.category === "BNB" ? "/ night" : "/ mo"}
+                  </span>
                 </div>
                 <div className="flex gap-4 mt-1.5 text-xs text-gray-400">
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {property.views.toLocaleString()} views</span>
