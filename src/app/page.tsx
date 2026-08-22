@@ -232,7 +232,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── STATS ────────────────────────────────────────────────────── */}
+      {/* ─── STATS (Hidden for now) ─────────────────────────────────── */}
+      {/*
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map(({ icon: Icon, value, label, color }, i) => (
@@ -246,6 +247,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      */}
 
       {/* ─── POPULAR LISTINGS ─────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
