@@ -203,7 +203,7 @@ export default function FAQsPage() {
               Contact Support
             </Link>
             <a
-              href="https://wa.me/254700123456"
+              href="https://wa.me/254797844540"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary text-xs px-5 py-2.5 flex items-center gap-2 text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100"

@@ -87,7 +87,7 @@ export async function PATCH(
     if (body.subcounty !== undefined) updateData.subcounty = body.subcounty;
     if (body.area !== undefined) updateData.area = body.area;
     if (body.rent !== undefined) updateData.rent = parseInt(body.rent);
-    if (body.deposit !== undefined) updateData.deposit = parseInt(body.deposit);
+    if (body.deposit !== undefined) updateData.deposit = parseInt(body.deposit) || 0;
     if (body.contactPerson !== undefined) updateData.contactPerson = body.contactPerson || null;
     if (body.contactPhone !== undefined) updateData.contactPhone = body.contactPhone || null;
     if (body.description !== undefined) updateData.description = body.description;

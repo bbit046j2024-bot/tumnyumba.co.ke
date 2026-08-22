@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         longitude: body.longitude ? parseFloat(body.longitude) : null,
         mapUrl: body.mapUrl || null,
         rent: parseInt(body.rent),
-        deposit: parseInt(body.deposit),
+        deposit: parseInt(body.deposit) || 0,
         contactPerson: body.contactPerson || null,
         contactPhone: body.contactPhone || null,
         description: body.description,

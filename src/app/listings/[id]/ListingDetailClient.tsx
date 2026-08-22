@@ -322,12 +322,23 @@ export default function ListingDetailClient() {
             {/* Key Highlights */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
               <div>
-                <span className="text-xs text-gray-400 font-medium">Monthly Rent</span>
-                <p className="font-poppins font-bold text-lg text-primary-700">KSh {property.rent.toLocaleString()}</p>
+                <span className="text-xs text-gray-400 font-medium">
+                  {property.category === "BNB" ? "Per Night" : "Monthly Rent"}
+                </span>
+                <p className="font-poppins font-bold text-lg text-primary-700">
+                  KSh {property.rent.toLocaleString()}
+                  {property.category === "BNB" && <span className="text-xs font-normal text-gray-400 ml-1">/night</span>}
+                </p>
               </div>
               <div>
-                <span className="text-xs text-gray-400 font-medium">Deposit</span>
-                <p className="font-poppins font-bold text-lg text-gray-800">KSh {property.deposit.toLocaleString()}</p>
+                <span className="text-xs text-gray-400 font-medium">
+                  {property.category === "BNB" ? "Per Week" : "Deposit"}
+                </span>
+                <p className="font-poppins font-bold text-lg text-gray-800">
+                  {property.category === "BNB"
+                    ? `KSh ${(property.rent * 6).toLocaleString()}`
+                    : `KSh ${property.deposit.toLocaleString()}`}
+                </p>
               </div>
               <div>
                 <span className="text-xs text-gray-400 font-medium">Category</span>
@@ -411,30 +422,48 @@ export default function ListingDetailClient() {
           <aside className="space-y-6">
             <div className="card p-6 space-y-6 sticky top-28">
               <div className="border-b border-gray-100 pb-4">
-                <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Total Monthly</span>
+                <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                  {property.category === "BNB" ? "Nightly Rate" : "Total Monthly"}
+                </span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="font-poppins font-bold text-3xl text-primary-700">KSh {property.rent.toLocaleString()}</span>
-                  <span className="text-gray-500 text-sm">/ month</span>
+                  <span className="text-gray-500 text-sm">{property.category === "BNB" ? "/ night" : "/ month"}</span>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">Refundable Deposit: KSh {property.deposit.toLocaleString()}</p>
+                {property.category === "BNB" ? (
+                  <p className="text-xs text-gray-400 mt-1">
+                    Est. weekly stay: KSh {(property.rent * 6).toLocaleString()} (6 nights)
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-400 mt-1">Refundable Deposit: KSh {property.deposit.toLocaleString()}</p>
+                )}
               </div>
 
-              {/* Direct Booking & Payment (Rent + Deposit) */}
-              <div className="space-y-2">
-                <button
-                  onClick={handleStartDirectBooking}
-                  disabled={property.availabilityStatus !== "AVAILABLE"}
-                  className="w-full py-3.5 px-4 text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-2 bg-[#1F9254] hover:bg-[#197A46] text-white shadow-lg shadow-emerald-700/20 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
-                >
-                  <CreditCard className="w-4 h-4 flex-shrink-0" />
-                  <span>
-                    Book & Pay KSh {(property.rent + property.deposit).toLocaleString()} (Rent + Deposit)
-                  </span>
-                </button>
-                <p className="text-[11px] text-gray-400 text-center">
-                  Instant M-Pesa STK Push — locks your room immediately.
-                </p>
-              </div>
+              {/* Direct Booking & Payment — hidden for BNB (contact-based) */}
+              {property.category !== "BNB" && (
+                <div className="space-y-2">
+                  <button
+                    onClick={handleStartDirectBooking}
+                    disabled={property.availabilityStatus !== "AVAILABLE"}
+                    className="w-full py-3.5 px-4 text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-2 bg-[#1F9254] hover:bg-[#197A46] text-white shadow-lg shadow-emerald-700/20 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+                  >
+                    <CreditCard className="w-4 h-4 flex-shrink-0" />
+                    <span>
+                      Book & Pay KSh {(property.rent + property.deposit).toLocaleString()} (Rent + Deposit)
+                    </span>
+                  </button>
+                  <p className="text-[11px] text-gray-400 text-center">
+                    Instant M-Pesa STK Push — locks your room immediately.
+                  </p>
+                </div>
+              )}
+              {property.category === "BNB" && (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-1.5">
+                  <p className="text-xs font-semibold text-amber-900">🏡 AirBnB / Short Stay</p>
+                  <p className="text-xs text-amber-800 leading-relaxed">
+                    This is a nightly rental. Express your interest below and the host will confirm availability and dates.
+                  </p>
+                </div>
+              )}
 
               {/* Express Interest / Contact */}
               <div className="border-t border-gray-100 pt-3 space-y-2">
@@ -550,20 +579,41 @@ export default function ListingDetailClient() {
 
               {/* Price Breakdown */}
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100 text-xs">
-                <div className="flex justify-between text-gray-600">
-                  <span>1st Month Rent:</span>
-                  <span className="font-semibold text-gray-900">KSh {property.rent.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Refundable Deposit:</span>
-                  <span className="font-semibold text-gray-900">KSh {property.deposit.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
-                  <span>Total Amount (Rent + Deposit):</span>
-                  <span className="text-[#1F6B4A] font-poppins">
-                    KSh {(property.rent + property.deposit).toLocaleString()}
-                  </span>
-                </div>
+                {property.category === "BNB" ? (
+                  <>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Nightly Rate:</span>
+                      <span className="font-semibold text-gray-900">KSh {property.rent.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Est. 6-night Stay:</span>
+                      <span className="font-semibold text-gray-900">KSh {(property.rent * 6).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
+                      <span>Estimated Total:</span>
+                      <span className="text-[#1F6B4A] font-poppins">
+                        KSh {(property.rent * 6).toLocaleString()}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between text-gray-600">
+                      <span>1st Month Rent:</span>
+                      <span className="font-semibold text-gray-900">KSh {property.rent.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Refundable Deposit:</span>
+                      <span className="font-semibold text-gray-900">KSh {property.deposit.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
+                      <span>Total Amount (Rent + Deposit):</span>
+                      <span className="text-[#1F6B4A] font-poppins">
+                        KSh {(property.rent + property.deposit).toLocaleString()}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {directBookingLoading ? (

@@ -232,13 +232,36 @@ export default function EditPropertyPage() {
         {/* Rent & Deposit */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="input-label">Monthly Rent (KSh)</label>
-            <input type="number" placeholder="6000" value={rent} onChange={(e) => setRent(e.target.value)} className="input" required />
+            <label className="input-label">
+              {category === "BNB" ? "Price Per Night (KSh)" : "Monthly Rent (KSh)"}
+            </label>
+            <input
+              type="number"
+              placeholder={category === "BNB" ? "3500" : "6000"}
+              value={rent}
+              onChange={(e) => setRent(e.target.value)}
+              className="input"
+              required
+            />
+            {category === "BNB" && (
+              <p className="text-xs text-amber-600 mt-1.5">
+                💡 Enter your nightly rate. A weekly estimate will be calculated automatically (×6 nights).
+              </p>
+            )}
           </div>
-          <div>
-            <label className="input-label">Deposit (KSh)</label>
-            <input type="number" placeholder="6000" value={deposit} onChange={(e) => setDeposit(e.target.value)} className="input" required />
-          </div>
+          {category !== "BNB" && (
+            <div>
+              <label className="input-label">Deposit (KSh)</label>
+              <input
+                type="number"
+                placeholder="6000"
+                value={deposit}
+                onChange={(e) => setDeposit(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+          )}
         </div>
 
         {/* Accommodation Spaces Remaining */}
