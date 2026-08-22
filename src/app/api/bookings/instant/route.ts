@@ -9,12 +9,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getPlatformSettings } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Please sign in to book this property." }, { status: 401 });
+    }
+
+    const settings = await getPlatformSettings();
+    if (!settings.enableDirectBooking) {
+      return NextResponse.json(
+        { error: "Direct online rent payment is currently disabled. Please use 'Take / Express Interest' to contact the partner." },
+        { status: 403 }
+      );
     }
 
     const { propertyId } = await req.json();

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import { getPlatformSettings } from "@/lib/settings";
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -9,6 +11,7 @@ export async function GET(
   try {
     const { id } = await params;
     const session = await auth();
+    const settings = await getPlatformSettings();
 
     const property = await prisma.property.findUnique({
       where: { id },
@@ -62,6 +65,7 @@ export async function GET(
       ...rest,
       partner: safePartner,
       hasLead,
+      enableDirectBooking: settings.enableDirectBooking,
       leadFee: property.leadFee || 0,
       effectiveLeadFee,
       totalSpaces: property.totalSpaces ?? 1,

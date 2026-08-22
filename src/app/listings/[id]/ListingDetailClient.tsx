@@ -54,6 +54,7 @@ interface PropertyDetail {
   availableSpaces?: number;
   images: { id: string; url: string; isPrimary: boolean }[];
   hasLead?: boolean;
+  enableDirectBooking?: boolean;
   partner: {
     companyName: string;
     user: { name: string; phone?: string | null; email?: string | null };
@@ -449,8 +450,8 @@ export default function ListingDetailClient() {
                 )}
               </div>
 
-              {/* Direct Booking & Payment — hidden for BNB (contact-based) */}
-              {property.category !== "BNB" && (
+              {/* Direct Booking & Payment — hidden when disabled by Admin or for BNB (contact-based) */}
+              {Boolean(property.enableDirectBooking) && property.category !== "BNB" && (
                 <div className="space-y-2">
                   <button
                     onClick={handleStartDirectBooking}
