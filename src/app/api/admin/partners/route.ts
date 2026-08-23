@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         }),
       },
       include: {
-        user: { select: { id: true, name: true, email: true, phone: true, createdAt: true } },
+        user: { select: { id: true, name: true, email: true, phone: true, emailVerified: true, createdAt: true } },
         _count: { select: { properties: true } },
       },
       orderBy: { createdAt: "desc" },

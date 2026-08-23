@@ -31,11 +31,7 @@ function LoginForm() {
     setLoading(false);
 
     if (result?.error) {
-      if (result.error.includes("EMAIL_NOT_VERIFIED")) {
-        setError("EMAIL_NOT_VERIFIED");
-      } else {
-        setError("Invalid email or password. Please try again.");
-      }
+      setError("Invalid email/phone or password. Please try again.");
     } else {
       const session = await getSession();
       if (callbackUrl) {
@@ -68,36 +64,22 @@ function LoginForm() {
         <p className="text-gray-500 text-sm mb-7">Sign in to your CampusKey Mombasa account</p>
 
         {error && (
-          <div className={`border text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2 ${
-            error === "EMAIL_NOT_VERIFIED"
-              ? "bg-amber-50 border-amber-200 text-amber-800"
-              : "bg-red-50 border-red-200 text-red-700"
-          }`}>
+          <div className="border text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2 bg-red-50 border-red-200 text-red-700">
             <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current" />
-            {error === "EMAIL_NOT_VERIFIED" ? (
-              <span>
-                Please verify your email before signing in.{" "}
-                <Link
-                  href={`/auth/verify-email?email=${encodeURIComponent(email)}`}
-                  className="font-semibold underline text-[#1F6B4A]"
-                >
-                  Resend verification email
-                </Link>
-              </span>
-            ) : error}
+            <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="input-label">Email Address</label>
+            <label className="input-label">Email or Phone Number</label>
             <div className="relative flex items-center">
               <Mail className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
               <input
                 id="email"
-                type="email"
+                type="text"
                 className="input pl-11"
-                placeholder="you@example.com"
+                placeholder="you@example.com or 0712 345 678"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

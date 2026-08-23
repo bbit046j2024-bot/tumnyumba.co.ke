@@ -30,7 +30,7 @@ interface Partner {
   payoutPhone: string | null;
   mpesaShortcode: string | null;
   createdAt: string;
-  user: { name: string; email: string; phone: string | null };
+  user: { id: string; name: string; email: string; phone: string | null; emailVerified?: string | null };
   _count: { properties: number };
 }
 
@@ -96,6 +96,35 @@ export default function AdminPartnersPage() {
       });
       if (res.ok) {
         setPartners((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)));
+      }
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const toggleUserEmailVerification = async (userId: string, partnerId: string, currentStatus: boolean) => {
+    setActionLoading(userId + "EMAIL_VERIFY");
+    const newStatus = !currentStatus;
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/verify`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verify: newStatus }),
+      });
+      if (res.ok) {
+        setPartners((prev) =>
+          prev.map((p) =>
+            p.id === partnerId
+              ? {
+                  ...p,
+                  user: {
+                    ...p.user,
+                    emailVerified: newStatus ? new Date().toISOString() : null,
+                  },
+                }
+              : p
+          )
+        );
       }
     } finally {
       setActionLoading(null);
@@ -284,9 +313,30 @@ export default function AdminPartnersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-gray-600 text-xs space-y-0.5">
+                      <td className="p-4 text-gray-600 text-xs space-y-1">
                         <div className="flex items-center gap-1"><Mail className="w-3 h-3 text-gray-400" /> {p.user.email}</div>
                         {p.user.phone && <div className="flex items-center gap-1"><Phone className="w-3 h-3 text-gray-400" /> {p.user.phone}</div>}
+                        <button
+                          onClick={() => toggleUserEmailVerification(p.user.id, p.id, !!p.user.emailVerified)}
+                          disabled={actionLoading === p.user.id + "EMAIL_VERIFY"}
+                          title={p.user.emailVerified ? "Email verified (click to unverify)" : "Email unverified (click to verify)"}
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all ${
+                            p.user.emailVerified
+                              ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                              : "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+                          }`}
+                        >
+                          {actionLoading === p.user.id + "EMAIL_VERIFY" ? (
+                            <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                          ) : (
+                            <span
+                              className={`w-1 h-1 rounded-full ${
+                                p.user.emailVerified ? "bg-emerald-500" : "bg-amber-500"
+                              }`}
+                            />
+                          )}
+                          {p.user.emailVerified ? "Email Verified" : "Email Unverified (Verify)"}
+                        </button>
                       </td>
                       <td className="p-4">
                         <span

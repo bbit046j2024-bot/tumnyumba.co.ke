@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
         name: true,
         email: true,
         phone: true,
+        emailVerified: true,
         createdAt: true,
         _count: { select: { savedProperties: true } },
       },

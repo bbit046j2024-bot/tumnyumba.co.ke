@@ -53,6 +53,7 @@ export const metadata: Metadata = {
 };
 
 import AuthProvider from "@/components/providers/AuthProvider";
+import EmailVerificationBanner from "@/components/common/EmailVerificationBanner";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,10 @@ export default function RootLayout({
         />
       </head>
       <body className="font-inter antialiased" suppressHydrationWarning>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <EmailVerificationBanner />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

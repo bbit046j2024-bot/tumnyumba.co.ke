@@ -8,6 +8,7 @@ interface Student {
   name: string;
   email: string;
   phone: string | null;
+  emailVerified: string | null;
   createdAt: string;
   _count: { savedProperties: number };
 }
@@ -18,6 +19,7 @@ export default function AdminStudentsPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
   
   // Deletion modal state
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
@@ -44,6 +46,42 @@ export default function AdminStudentsPage() {
     const t = setTimeout(fetchStudents, 300);
     return () => clearTimeout(t);
   }, [fetchStudents]);
+
+  const handleVerifyToggle = async (student: Student) => {
+    setVerifyingId(student.id);
+    setError("");
+    setSuccess("");
+    const newStatus = !student.emailVerified;
+
+    try {
+      const res = await fetch(`/api/admin/users/${student.id}/verify`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verify: newStatus }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Failed to update verification status.");
+      } else {
+        setStudents((prev) =>
+          prev.map((s) =>
+            s.id === student.id
+              ? { ...s, emailVerified: newStatus ? new Date().toISOString() : null }
+              : s
+          )
+        );
+        setSuccess(
+          `Student "${student.name}" ${newStatus ? "marked as verified" : "unverified"}.`
+        );
+        setTimeout(() => setSuccess(""), 4000);
+      }
+    } catch {
+      setError("Network error updating verification status.");
+    } finally {
+      setVerifyingId(null);
+    }
+  };
 
   const handleDelete = async () => {
     if (!studentToDelete) return;
@@ -122,6 +160,7 @@ export default function AdminStudentsPage() {
                 <tr className="bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase font-poppins">
                   <th className="p-4">Student</th>
                   <th className="p-4">Contact</th>
+                  <th className="p-4">Verification</th>
                   <th className="p-4">Saved</th>
                   <th className="p-4">Joined</th>
                   <th className="p-4 text-right">Actions</th>
@@ -153,6 +192,29 @@ export default function AdminStudentsPage() {
                       )}
                     </td>
                     <td className="p-4">
+                      <button
+                        onClick={() => handleVerifyToggle(s)}
+                        disabled={verifyingId === s.id}
+                        title={s.emailVerified ? "Click to unverify" : "Click to mark as verified"}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                          s.emailVerified
+                            ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                            : "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+                        }`}
+                      >
+                        {verifyingId === s.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              s.emailVerified ? "bg-emerald-500" : "bg-amber-500"
+                            }`}
+                          />
+                        )}
+                        {s.emailVerified ? "Verified" : "Unverified (Click to Verify)"}
+                      </button>
+                    </td>
+                    <td className="p-4">
                       <div className="flex items-center gap-1.5 text-primary-700 font-semibold">
                         <Bookmark className="w-3.5 h-3.5" /> {s._count.savedProperties}
                       </div>
@@ -173,7 +235,7 @@ export default function AdminStudentsPage() {
                 ))}
                 {students.length === 0 && !loading && (
                   <tr>
-                    <td colSpan={5} className="p-12 text-center text-gray-400 text-sm">
+                    <td colSpan={6} className="p-12 text-center text-gray-400 text-sm">
                       No students found.
                     </td>
                   </tr>
