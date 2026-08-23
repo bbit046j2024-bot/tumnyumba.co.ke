@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import PartnerSidebar from "@/components/dashboard/PartnerSidebar";
 import AdminTopbar from "@/components/dashboard/AdminTopbar";
+import EmailVerificationBanner from "@/components/common/EmailVerificationBanner";
 
 export default async function PartnerLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -13,6 +14,7 @@ export default async function PartnerLayout({ children }: { children: React.Reac
     <div className="flex h-screen bg-bg overflow-hidden">
       <PartnerSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
+        <EmailVerificationBanner />
         <AdminTopbar user={session.user} />
         <main className="flex-1 overflow-y-auto p-6 custom-scrollbar">
           {children}

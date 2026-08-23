@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
 import NotificationBell from "@/components/dashboard/NotificationBell";
+import EmailVerificationBanner from "@/components/common/EmailVerificationBanner";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -41,6 +42,7 @@ export default function Navbar() {
         scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-white border-b border-gray-100/80 shadow-xs"
       }`}
     >
+      <EmailVerificationBanner />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
