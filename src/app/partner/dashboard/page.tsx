@@ -23,6 +23,7 @@ interface Stats {
 
 const statusColor: Record<string, string> = {
   PENDING: "badge-warning",
+  VERIFIED: "badge-success",
   CONTACTED: "badge-warning",
   BOOKED: "badge-success",
   CANCELLED: "bg-red-100 text-red-700 px-2 py-0.5 rounded-lg text-xs font-semibold",

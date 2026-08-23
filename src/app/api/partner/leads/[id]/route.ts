@@ -47,3 +47,56 @@ export async function DELETE(
     return NextResponse.json({ error: "Failed to delete enquiry" }, { status: 500 });
   }
 }
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== "PARTNER") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await req.json();
+    const { status } = body;
+
+    const partner = await prisma.partnerProfile.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!partner) {
+      return NextResponse.json({ error: "Partner profile not found" }, { status: 404 });
+    }
+
+    const lead = await prisma.lead.findFirst({
+      where: {
+        id,
+        property: { partnerId: partner.id },
+      },
+    });
+
+    if (!lead) {
+      return NextResponse.json(
+        { error: "Lead not found or access denied" },
+        { status: 404 }
+      );
+    }
+
+    const updatedLead = await prisma.lead.update({
+      where: { id },
+      data: {
+        ...(status && { status }),
+      },
+    });
+
+    return NextResponse.json(updatedLead);
+  } catch (error: any) {
+    console.error("[PATCH /api/partner/leads/[id]]", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to update lead status" },
+      { status: 500 }
+    );
+  }
+}

@@ -94,6 +94,7 @@ export default function PartnerBookingsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loadingLeads, setLoadingLeads] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [verifyingLeadId, setVerifyingLeadId] = useState<string | null>(null);
   const [deletingBookingId, setDeletingBookingId] = useState<string | null>(null);
 
   const [error, setError] = useState("");
@@ -126,6 +127,27 @@ export default function PartnerBookingsPage() {
       setLoadingLeads(false);
     }
   }, []);
+
+  const handleToggleLeadStatus = async (leadId: string, currentStatus: string) => {
+    setVerifyingLeadId(leadId);
+    const nextStatus = currentStatus === "VERIFIED" || currentStatus === "BOOKED" ? "PENDING" : "VERIFIED";
+    try {
+      const res = await fetch(`/api/partner/leads/${leadId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      if (res.ok) {
+        setLeads((prev) =>
+          prev.map((l) => (l.id === leadId ? { ...l, status: nextStatus } : l))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update lead status:", err);
+    } finally {
+      setVerifyingLeadId(null);
+    }
+  };
 
   useEffect(() => {
     fetchBookings();
@@ -493,6 +515,31 @@ export default function PartnerBookingsPage() {
                       {CATEGORY_LABELS[lead.property.category] || lead.property.category} · {lead.property.area}
                     </div>
                     <div className="flex items-center justify-between md:justify-end gap-2 w-full mt-1 flex-wrap">
+                      <button
+                        onClick={() => handleToggleLeadStatus(lead.id, lead.status)}
+                        disabled={verifyingLeadId === lead.id}
+                        title={lead.status === "VERIFIED" || lead.status === "BOOKED" ? "Click to set as Pending" : "Click to mark Lead as Verified"}
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg transition-all ${
+                          lead.status === "VERIFIED" || lead.status === "BOOKED"
+                            ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                            : "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+                        }`}
+                      >
+                        {verifyingLeadId === lead.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              lead.status === "VERIFIED" || lead.status === "BOOKED" ? "bg-emerald-500" : "bg-amber-500"
+                            }`}
+                          />
+                        )}
+                        {lead.status === "VERIFIED"
+                          ? "Verified"
+                          : lead.status === "BOOKED"
+                          ? "Booked"
+                          : "Pending (Click to Verify)"}
+                      </button>
                       <span className="text-xs text-gray-400 mr-auto md:mr-0">
                         {new Date(lead.createdAt).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })}
                       </span>

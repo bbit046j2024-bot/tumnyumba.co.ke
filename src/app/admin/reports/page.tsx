@@ -16,6 +16,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const LEAD_STATUS_LABELS: Record<string, string> = {
   PENDING: "Pending",
+  VERIFIED: "Verified",
   CONTACTED: "Contacted",
   BOOKED: "Booked",
   CANCELLED: "Cancelled",
@@ -48,10 +49,10 @@ type ReportData = {
 };
 
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
-  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  const pct = Math.round((value / max) * 100);
   return (
-    <div className="w-full bg-gray-100 rounded-full h-2">
-      <div className={`h-2 rounded-full transition-all duration-700 ${color}`} style={{ width: `${pct}%` }} />
+    <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+      <div className={`h-2 rounded-full transition-all duration-500 ${color}`} style={{ width: `${pct}%` }} />
     </div>
   );
 }
@@ -60,35 +61,63 @@ export default function AdminReportsPage() {
   const [data, setData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updatingLeadId, setUpdatingLeadId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/reports")
       .then(res => {
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("Failed to load analytics");
         return res.json();
       })
-      .then(setData)
-      .catch(() => setError("Failed to load analytics. Please try again."))
+      .then(d => setData(d))
+      .catch(e => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleToggleLeadVerify = async (leadId: string, currentStatus: string) => {
+    setUpdatingLeadId(leadId);
+    const nextStatus = currentStatus === "VERIFIED" || currentStatus === "BOOKED" ? "PENDING" : "VERIFIED";
+    try {
+      const res = await fetch(`/api/admin/leads/${leadId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      if (res.ok) {
+        setData(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            recentLeads: prev.recentLeads.map(l =>
+              l.id === leadId ? { ...l, status: nextStatus } : l
+            ),
+          };
+        });
+      }
+    } catch (err) {
+      console.error("Failed to update lead status:", err);
+    } finally {
+      setUpdatingLeadId(null);
+    }
+  };
 
   const downloadCSV = () => {
     if (!data) return;
     const rows = [
       ["Metric", "Value"],
       ["Total Properties", data.totalProperties],
-      ["Total Students", data.totalStudents],
-      ["Total Partners", data.totalPartners],
-      ["Total Leads", data.totalLeads],
+      ["Registered Students", data.totalStudents],
+      ["Active Partners", data.totalPartners],
+      ["Total Leads Generated", data.totalLeads],
       [],
-      ["Category", "Count"],
+      ["Property Category", "Count"],
       ...data.propertiesByCategory.map(c => [CATEGORY_LABELS[c.category] ?? c.category, c._count.id]),
       [],
-      ["Area", "Count"],
+      ["Popular Areas", "Count"],
       ...data.propertiesByArea.map(a => [a.area, a._count.id]),
     ];
-    const csv = rows.map(r => r.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const csvContent = rows.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -102,6 +131,7 @@ export default function AdminReportsPage() {
 
   const leadStatusIcons: Record<string, React.ReactElement> = {
     PENDING: <Clock className="w-3.5 h-3.5 text-amber-500" />,
+    VERIFIED: <CheckCircle2 className="w-3.5 h-3.5 text-[#1F9254]" />,
     CONTACTED: <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />,
     BOOKED: <CheckCircle2 className="w-3.5 h-3.5 text-[#1F9254]" />,
     CANCELLED: <XCircle className="w-3.5 h-3.5 text-red-400" />,
@@ -289,11 +319,37 @@ export default function AdminReportsPage() {
                         <td className="py-3 pr-4 text-xs text-gray-500">{lead.property.area}</td>
                         <td className="py-3 pr-4 text-xs font-semibold text-[#1F6B4A]">KSh {lead.property.rent.toLocaleString()}</td>
                         <td className="py-3 pr-4">
-                          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                            lead.status === "BOOKED" ? "badge-success" :
-                            lead.status === "PENDING" ? "badge-warning" :
-                            lead.status === "CANCELLED" ? "badge-danger" : "bg-blue-50 text-blue-700"
-                          }`}>{LEAD_STATUS_LABELS[lead.status] ?? lead.status}</span>
+                          <button
+                            onClick={() => handleToggleLeadVerify(lead.id, lead.status)}
+                            disabled={updatingLeadId === lead.id}
+                            title={lead.status === "VERIFIED" || lead.status === "BOOKED" ? "Click to set Pending" : "Click to Verify Lead"}
+                            className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full transition-all cursor-pointer ${
+                              lead.status === "VERIFIED" || lead.status === "BOOKED"
+                                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                                : lead.status === "PENDING"
+                                ? "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+                                : lead.status === "CANCELLED"
+                                ? "badge-danger"
+                                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                            }`}
+                          >
+                            {updatingLeadId === lead.id ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  lead.status === "VERIFIED" || lead.status === "BOOKED" ? "bg-emerald-500" : "bg-amber-500"
+                                }`}
+                              />
+                            )}
+                            {lead.status === "VERIFIED"
+                              ? "Verified"
+                              : lead.status === "BOOKED"
+                              ? "Booked"
+                              : lead.status === "PENDING"
+                              ? "Pending (Click to Verify)"
+                              : LEAD_STATUS_LABELS[lead.status] ?? lead.status}
+                          </button>
                         </td>
                         <td className="py-3 text-xs text-gray-400">
                           {new Date(lead.createdAt).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })}
