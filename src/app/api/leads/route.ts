@@ -83,27 +83,36 @@ export async function POST(req: NextRequest) {
       }).catch((err) => console.error("[api/leads] spaces update failed:", err));
     }
 
-    // Send notification emails (fire-and-forget — don't block the response)
+    // Send notification emails
     const studentName = session.user.name ?? "A student";
     const studentEmail = session.user.email ?? "";
 
+    const emailPromises: Promise<any>[] = [];
     if (studentEmail) {
-      sendBookingConfirmationToStudent(
-        studentEmail,
-        studentName,
-        property.title,
-        property.id
-      ).catch((err) => console.error("[email] student confirmation failed:", err));
+      emailPromises.push(
+        sendBookingConfirmationToStudent(
+          studentEmail,
+          studentName,
+          property.title,
+          property.id
+        ).catch((err) => console.error("[email] student confirmation failed:", err))
+      );
     }
 
     if (property.partner?.user?.email) {
-      sendBookingNotificationToPartner(
-        property.partner.user.email,
-        property.partner.user.name,
-        studentName,
-        property.title,
-        property.id
-      ).catch((err) => console.error("[email] partner notification failed:", err));
+      emailPromises.push(
+        sendBookingNotificationToPartner(
+          property.partner.user.email,
+          property.partner.user.name,
+          studentName,
+          property.title,
+          property.id
+        ).catch((err) => console.error("[email] partner notification failed:", err))
+      );
+    }
+
+    if (emailPromises.length > 0) {
+      await Promise.all(emailPromises);
     }
 
     return NextResponse.json(lead, { status: 201 });

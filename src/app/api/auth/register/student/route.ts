@@ -48,8 +48,12 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send verification email (non-blocking)
-    sendVerificationEmail(email, name, token).catch(console.error);
+    // Send verification email
+    try {
+      await sendVerificationEmail(email, name, token);
+    } catch (emailErr) {
+      console.error("[register/student] Failed to send verification email:", emailErr);
+    }
 
     return NextResponse.json(
       { message: "Student account created successfully. Please check your email to verify your account.", userId: user.id },

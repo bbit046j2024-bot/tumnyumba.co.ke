@@ -41,8 +41,12 @@ export async function GET(req: Request) {
     prisma.verificationToken.delete({ where: { token } }),
   ]);
 
-  // Send welcome email (fire and forget)
-  sendWelcomeEmail(record.user.email, record.user.name, record.user.role as "STUDENT" | "PARTNER").catch(console.error);
+  // Send welcome email
+  try {
+    await sendWelcomeEmail(record.user.email, record.user.name, record.user.role as "STUDENT" | "PARTNER");
+  } catch (emailErr) {
+    console.error("[verify-email] Failed to send welcome email:", emailErr);
+  }
 
   return NextResponse.redirect(
     new URL("/auth/login?verified=1", req.url)

@@ -36,6 +36,8 @@ export interface DarajaCredentials {
   consumerSecret: string;
   shortCode: string;
   passkey: string;
+  partyB?: string; // If Buy Goods Till Number differs from Store Number / BusinessShortCode
+  transactionType?: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline";
 }
 
 export interface StkPushParams {
@@ -141,20 +143,27 @@ function stkPassword(shortCode: string, passkey: string, ts: string): string {
 export async function stkPush(params: StkPushParams, token: string): Promise<StkPushResult> {
   const { amount, customerPhone, accountReference, transactionDesc, paymentId, credentials } =
     params;
-  const { shortCode, passkey } = credentials;
+  const { shortCode, passkey, partyB, transactionType } = credentials;
   const callbackBase = process.env.MPESA_CALLBACK_BASE_URL!;
 
   const ts = timestamp();
   const password = stkPassword(shortCode, passkey, ts);
 
+  const finalTransactionType =
+    transactionType ??
+    (process.env.MPESA_TRANSACTION_TYPE as "CustomerBuyGoodsOnline" | "CustomerPayBillOnline") ??
+    (process.env.MPESA_TILL_NUMBER ? "CustomerBuyGoodsOnline" : "CustomerPayBillOnline");
+
+  const finalPartyB = partyB ?? process.env.MPESA_TILL_NUMBER ?? shortCode;
+
   const body = {
     BusinessShortCode: shortCode,
     Password: password,
     Timestamp: ts,
-    TransactionType: "CustomerPayBillOnline",
+    TransactionType: finalTransactionType,
     Amount: Math.round(amount), // Daraja requires an integer
     PartyA: customerPhone,
-    PartyB: shortCode,
+    PartyB: finalPartyB,
     PhoneNumber: customerPhone,
     CallBackURL: `${callbackBase}/api/mpesa/callback/${paymentId}`,
     AccountReference: accountReference.slice(0, 12), // Daraja max 12 chars
@@ -277,10 +286,16 @@ export async function b2cPayment(params: B2CParams, token: string): Promise<B2CR
 
 /** Returns platform collection credentials from env vars. */
 export function getPlatformCredentials(): DarajaCredentials {
+  const shortCode = process.env.MPESA_STORE_NUMBER || process.env.MPESA_PAYBILL!;
+  const tillNumber = process.env.MPESA_TILL_NUMBER;
+  const isTill = !!tillNumber || process.env.MPESA_TRANSACTION_TYPE === "CustomerBuyGoodsOnline";
+
   return {
     consumerKey: process.env.MPESA_CONSUMER_KEY!,
     consumerSecret: process.env.MPESA_CONSUMER_SECRET!,
-    shortCode: process.env.MPESA_PAYBILL!,
+    shortCode: shortCode,
     passkey: process.env.MPESA_PASSKEY!,
+    partyB: tillNumber || shortCode,
+    transactionType: isTill ? "CustomerBuyGoodsOnline" : "CustomerPayBillOnline",
   };
 }

@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import { getPlatformToken, getPlatformCredentials, stkPush } from "@/lib/daraja";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
@@ -54,16 +56,36 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Generate reference code for M-PESA STK prompt
-    const checkoutRequestId = `CK-MPESA-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Trigger Daraja STK Push
+    try {
+      const token = await getPlatformToken();
+      const credentials = getPlatformCredentials();
+      const stkResult = await stkPush(
+        {
+          amount: effectiveFee,
+          customerPhone: formattedPhone,
+          accountReference: property.title.replace(/[^a-zA-Z0-9]/g, "").slice(0, 12) || "LeadFee",
+          transactionDesc: "Lead Fee",
+          paymentId: `lead_${Date.now()}`,
+          credentials,
+        },
+        token
+      );
 
-    return NextResponse.json({
-      success: true,
-      message: `STK Push initiated. Please check your phone (${formattedPhone}) and enter your M-PESA PIN to complete payment of KSh ${effectiveFee}.`,
-      checkoutRequestId,
-      phone: formattedPhone,
-      amount: effectiveFee,
-    });
+      return NextResponse.json({
+        success: true,
+        message: `STK Push sent to ${formattedPhone}. Please enter your M-PESA PIN to complete payment of KSh ${effectiveFee}.`,
+        checkoutRequestId: stkResult.checkoutRequestId,
+        phone: formattedPhone,
+        amount: effectiveFee,
+      });
+    } catch (darajaErr: any) {
+      console.warn("[POST /api/mpesa/stkpush] Daraja STK Push error:", darajaErr.message);
+      return NextResponse.json(
+        { error: darajaErr.message || "Failed to trigger M-PESA prompt. Please try again." },
+        { status: 502 }
+      );
+    }
   } catch (error) {
     console.error("[POST /api/mpesa/stkpush]", error);
     return NextResponse.json(
