@@ -67,12 +67,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = (user as any).role;
         token.id = user.id;
-        token.emailVerified = (user as any).emailVerified;
+        token.emailVerified = !!(user as any).emailVerified;
         token.phone = (user as any).phone;
       }
+
+      // If token indicates unverified, re-check DB on session validation/reload
+      if (token.id && !token.emailVerified) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { emailVerified: true },
+          });
+          if (dbUser?.emailVerified) {
+            token.emailVerified = true;
+          }
+        } catch (err) {
+          console.error("[jwt callback] Error checking verification status:", err);
+        }
+      }
+
       if (trigger === "update" && session) {
         if (typeof session.emailVerified !== "undefined") {
-          token.emailVerified = session.emailVerified;
+          token.emailVerified = !!session.emailVerified;
         }
       }
       return token;

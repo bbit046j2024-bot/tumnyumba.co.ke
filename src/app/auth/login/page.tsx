@@ -63,6 +63,13 @@ function LoginForm() {
         <h1 className="font-poppins font-bold text-2xl text-gray-900 mb-1">Welcome back</h1>
         <p className="text-gray-500 text-sm mb-7">Sign in to your CampusKey Mombasa account</p>
 
+        {searchParams.get("verified") === "1" && (
+          <div className="border text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2 bg-emerald-50 border-emerald-200 text-emerald-800">
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-600" />
+            <span>🎉 Your email has been verified successfully! Please sign in.</span>
+          </div>
+        )}
+
         {error && (
           <div className="border text-sm rounded-xl px-4 py-3 mb-5 flex items-center gap-2 bg-red-50 border-red-200 text-red-700">
             <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current" />

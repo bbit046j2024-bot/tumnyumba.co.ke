@@ -13,7 +13,7 @@ export default function EmailVerificationBanner() {
 
   useEffect(() => {
     // Only show if user is logged in, email is unverified, and banner not dismissed in current browser session
-    if (session?.user && session.user.emailVerified === false) {
+    if (session?.user && !session.user.emailVerified) {
       const isDismissed = sessionStorage.getItem("dismissed_verify_banner");
       if (!isDismissed) {
         setDismissed(false);
