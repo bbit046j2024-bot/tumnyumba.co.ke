@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Shield, FileText, CheckCircle2, Lock, HelpCircle } from "lucide-react";
+import { Shield, FileText, CheckCircle2, Lock, HelpCircle, Building2, UserCheck, KeyRound, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
@@ -17,99 +17,137 @@ export default function TermsPage() {
         <div className="space-y-8">
           {/* Header */}
           <div className="border-b border-gray-200 pb-8 text-center sm:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-4 border border-emerald-200">
-              <FileText className="w-4 h-4" /> Legal & Governance
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold mb-4 border border-emerald-200">
+              <FileText className="w-4 h-4 text-[#1F6B4A]" /> Legal Agreement &amp; Platform Governance
             </div>
             <h1 className="font-poppins font-extrabold text-3xl sm:text-4xl text-gray-900 tracking-tight">
               Terms of Service
             </h1>
             <p className="text-gray-500 text-sm mt-2">
-              Last updated: August 15, 2026 • Applies to all CampusKey Mombasa users, students, and listing partners.
+              Last updated: August 2026 • Governs all Students, Landlords, Property Managers, and Agencies using CampusKey Mombasa.
             </p>
           </div>
 
           {/* Highlights Box */}
-          <div className="p-6 bg-gradient-to-r from-emerald-900 to-primary-900 rounded-2xl text-white space-y-3 shadow-lg">
+          <div className="p-6 bg-gradient-to-r from-[#0E3B2E] to-[#1F6B4A] rounded-2xl text-white space-y-3 shadow-lg">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-yellow-400" />
-              <h2 className="font-poppins font-bold text-lg text-yellow-400">CampusKey Platform Promise</h2>
+              <Shield className="w-5 h-5 text-yellow-300" />
+              <h2 className="font-poppins font-bold text-lg text-yellow-300">The CampusKey Platform Covenant</h2>
             </div>
-            <p className="text-xs text-primary-100 leading-relaxed">
-              CampusKey is committed to connecting students directly with verified property owners in Mombasa.
-              Students browse listings for free, and property partners benefit from transparent, performance-based lead connections.
+            <p className="text-xs text-emerald-100 leading-relaxed">
+              CampusKey connects students directly with verified property owners, landlords, and professional real estate agencies in Mombasa. We uphold verified listing accuracy, zero-middleman direct contact, transparent semester tenancy tracking, and secure M-PESA payment flows.
             </p>
           </div>
 
           {/* Content Sections */}
-          <div className="space-y-8 text-sm leading-relaxed text-gray-600">
+          <div className="space-y-6 text-sm leading-relaxed text-gray-600">
             {/* Section 1 */}
-            <section className="card p-6 sm:p-8 space-y-3">
+            <section className="card p-6 sm:p-8 space-y-3 bg-white border border-gray-100 rounded-2xl shadow-xs">
               <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary-600" /> 1. Acceptance of Terms
+                <CheckCircle2 className="w-5 h-5 text-[#1F6B4A]" /> 1. Acceptance of Terms &amp; Scope
               </h2>
               <p>
-                By creating an account, browsing listings, or listing a property on CampusKey (<span className="font-semibold text-gray-800">campuskey.co.ke</span> or <span className="font-semibold text-gray-800">tumnyumba.co.ke</span>), you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, you must not use our platform.
+                By creating an account, browsing listings, subscribing to area notifications, or listing a property on CampusKey (<span className="font-semibold text-gray-800">campuskey.co.ke</span> or <span className="font-semibold text-gray-800">tumnyumba.co.ke</span>), you acknowledge that you have read, understood, and agree to be legally bound by these Terms of Service and our Privacy Policy.
               </p>
             </section>
 
             {/* Section 2 */}
-            <section className="card p-6 sm:p-8 space-y-3">
+            <section className="card p-6 sm:p-8 space-y-4 bg-white border border-gray-100 rounded-2xl shadow-xs">
               <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary-600" /> 2. Student Users & Listings
+                <UserCheck className="w-5 h-5 text-blue-600" /> 2. Student User Provisions
               </h2>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <strong className="text-gray-800">Free Listing Access:</strong> Searching and viewing property details on CampusKey is free for students.
+                  <strong className="text-gray-800">Free Listing Discovery:</strong> Searching, filtering, and viewing verified student bedsitters, hostels, and single rooms across Mombasa is free.
                 </li>
                 <li>
-                  <strong className="text-gray-800">Expressing Interest:</strong> For properties where an inspection or lead fee is configured by the platform administration, students will see an explicit M-PESA payment prompt. For zero-fee properties and Hostel listings, contact details unlock instantly at KSh 0.
+                  <strong className="text-gray-800">Area Alert Subscriptions:</strong> Students may subscribe to specific geographic zones (e.g. Tudor, Nyali, Mshomoroni, Buxton, Tononoka). Subscriptions can be configured or deactivated at any time in the student profile.
                 </li>
                 <li>
-                  <strong className="text-gray-800">Direct Contact Responsibility:</strong> Students are responsible for verifying physical room availability and terms directly with the verified partner before making off-platform tenancy payments.
+                  <strong className="text-gray-800">Direct Landlord Contact:</strong> Once interest is expressed, verified landlord/agency phone numbers are released immediately for direct inspection arrangements without broker exploitation.
+                </li>
+                <li>
+                  <strong className="text-gray-800">Tenancy Confirmation:</strong> When an assigned landlord records a student stay, the student may confirm or dispute the tenancy handshake via their dashboard.
                 </li>
               </ul>
             </section>
 
             {/* Section 3 */}
-            <section className="card p-6 sm:p-8 space-y-3">
+            <section className="card p-6 sm:p-8 space-y-4 bg-white border border-gray-100 rounded-2xl shadow-xs">
               <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary-600" /> 3. Property Owners & Partners
+                <Building2 className="w-5 h-5 text-[#1F6B4A]" /> 3. Landlords &amp; Real Estate Agencies (Partners)
               </h2>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <strong className="text-gray-800">Permit & Ownership Verification:</strong> All partners must submit valid identification, company details, or business permits. Unverified listings may be suspended or removed.
+                  <strong className="text-gray-800">Identity &amp; Business Permit Verification:</strong> All property owners, caretakers, and agencies must complete account verification. Listings undergo administrative vetting before becoming publicly visible.
                 </li>
                 <li>
-                  <strong className="text-gray-800">Accuracy of Information:</strong> Partners must maintain accurate rent prices, deposit requirements, amenity tags, and remaining space counters (<span className="font-semibold text-gray-800">availableSpaces</span>).
+                  <strong className="text-gray-800">Listing Integrity:</strong> Partners must ensure accurate representations of rent, deposit requirements, utility amenities (water, electricity, wifi, security), and exact space counts.
                 </li>
                 <li>
-                  <strong className="text-gray-800">Hostel Rules:</strong> Hostel listings are zero-rated for lead fees. Standard rental listings are subject to admin lead fee configurations payable via automated M-PESA invoicing.
+                  <strong className="text-gray-800">Content Moderation &amp; Anti-Spam:</strong> Phone numbers and external contact spam within property titles or public descriptions are strictly prohibited and filtered automatically.
                 </li>
               </ul>
             </section>
 
             {/* Section 4 */}
-            <section className="card p-6 sm:p-8 space-y-3">
+            <section className="card p-6 sm:p-8 space-y-4 bg-white border border-gray-100 rounded-2xl shadow-xs">
               <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary-600" /> 4. Payments, Refunds & M-PESA
+                <KeyRound className="w-5 h-5 text-[#1F6B4A]" /> 4. Tenancy Cycles, Expiry &amp; Relisting Rules
               </h2>
               <p>
-                All payments processed through M-PESA via CampusKey are strictly secured using Safaricom STK Push APIs. Lead fees paid to unlock direct partner contacts are non-refundable once contact credentials have been rendered, except in cases where a property listing is proven fraudulent.
+                To maintain real-time housing availability and prevent stale/ghost listings:
               </p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>
+                  <strong className="text-gray-800">Recording Occupancy:</strong> When a room is taken, the landlord or agency records the tenant (Student or General Tenant) with basic contact details. The system automatically updates room availability.
+                </li>
+                <li>
+                  <strong className="text-gray-800">Semester &amp; Lease Tracking:</strong> Tenancies are structured around university semesters (Semester 1, Semester 2, Academic Year) or custom durations.
+                </li>
+                <li>
+                  <strong className="text-gray-800">Automated Expiry &amp; Relisting:</strong> At the conclusion of a semester or lease, landlords receive automated email reminders. If the tenant vacates, the landlord is obligated to re-list or pause the unit promptly.
+                </li>
+                <li>
+                  <strong className="text-gray-800">Instant Alert Broadcast:</strong> Re-listing a vacated property triggers automatic vacancy alerts to students watching that area.
+                </li>
+              </ul>
             </section>
 
             {/* Section 5 */}
-            <section className="card p-6 sm:p-8 space-y-3">
+            <section className="card p-6 sm:p-8 space-y-4 bg-white border border-gray-100 rounded-2xl shadow-xs">
               <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-primary-600" /> 5. Account Safety & Support
+                <Lock className="w-5 h-5 text-[#1F6B4A]" /> 5. Payments, Fees &amp; M-PESA Security
+              </h2>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>
+                  All financial transactions on CampusKey are processed via official Safaricom Daraja M-PESA STK Push channels.
+                </li>
+                <li>
+                  Hostel categories remain strictly zero-rated for lead fees. Standard private rentals and bedsitters are subject to administrative lead fee schedules.
+                </li>
+                <li>
+                  Lead unlocking fees are considered fulfilled once contact details are rendered, except where a property is proven to be fraudulent.
+                </li>
+              </ul>
+            </section>
+
+            {/* Section 6 */}
+            <section className="card p-6 sm:p-8 space-y-4 bg-white border border-gray-100 rounded-2xl shadow-xs">
+              <h2 className="font-poppins font-bold text-lg text-gray-900 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-600" /> 6. Fraud Prevention &amp; Account Suspension
               </h2>
               <p>
-                CampusKey reserves the right to suspend any account engaging in fraudulent activities, misrepresentation of housing, or harassment. If you encounter any fraudulent listing, please contact support immediately at{" "}
-                <a href="mailto:campusdive.org@gmail.com" className="text-primary-700 font-semibold hover:underline">
-                  campusdive.org@gmail.com
-                </a>{" "}
-                or call <span className="font-semibold text-gray-800">+254 797 844 540</span>.
+                CampusKey maintains zero tolerance for fraud, scam housing, fake pictures, or harassment. We reserve the immediate right to suspend or permanently ban accounts found violating platform integrity or Kenyan law.
               </p>
+              <div className="pt-2 flex flex-col sm:flex-row gap-4 text-xs font-semibold">
+                <a href="mailto:campusdive.org@gmail.com" className="flex items-center gap-2 text-[#1F6B4A] hover:underline">
+                  <HelpCircle className="w-4 h-4" /> campusdive.org@gmail.com
+                </a>
+                <span className="flex items-center gap-2 text-gray-700">
+                  <Shield className="w-4 h-4 text-[#1F6B4A]" /> Dedicated Fraud Desk: +254 797 844 540
+                </span>
+              </div>
             </section>
           </div>
 

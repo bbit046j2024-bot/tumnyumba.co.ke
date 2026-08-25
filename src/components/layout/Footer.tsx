@@ -152,7 +152,28 @@ export default function Footer() {
                 { label: "How It Works", href: "/how-it-works" },
                 { label: "Student Tips", href: "/student-tips" },
                 { label: "FAQs", href: "/faqs" },
-                { label: "Register", href: "/auth/register/student" },
+                { label: "Student Register", href: "/auth/register/student" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="text-sm text-gray-300 hover:text-white hover:underline transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* For Landlords & Partners */}
+          <div>
+            <h4 className="font-poppins font-semibold text-sm uppercase tracking-wider text-[#3CB474] mb-4">
+              Partners &amp; Landlords
+            </h4>
+            <ul className="space-y-2.5">
+              {[
+                { label: "List Property", href: "/for-partners" },
+                { label: "Partner Benefits", href: "/for-partners" },
+                { label: "Partner Register", href: "/auth/register/partner" },
+                { label: "Partner Login", href: "/auth/login" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="text-sm text-gray-300 hover:text-white hover:underline transition-colors">

@@ -17,6 +17,7 @@ import {
   X,
   Plus,
   BellRing,
+  CheckCircle2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -51,9 +52,14 @@ export default function ProfilePage() {
   const [customArea, setCustomArea] = useState("");
   const [subError, setSubError] = useState<string | null>(null);
 
+  // ── student tenancy state ───────────────────────────────────────────────
+  const [studentTenancy, setStudentTenancy] = useState<any>(null);
+  const [tenancyLoading, setTenancyLoading] = useState(false);
+  const [confirmActionLoading, setConfirmActionLoading] = useState(false);
+
   const isStudent = session?.user?.role === "STUDENT";
 
-  // Fetch existing subscriptions on mount (students only)
+  // Fetch existing subscriptions and active tenancy on mount (students only)
   useEffect(() => {
     if (!isStudent) return;
     setLoadingSubs(true);
@@ -64,7 +70,38 @@ export default function ProfilePage() {
       })
       .catch(() => {})
       .finally(() => setLoadingSubs(false));
+
+    fetch("/api/student/tenancy")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data) setStudentTenancy(data);
+      })
+      .catch(() => {});
   }, [isStudent]);
+
+  const handleTenancyConfirm = async (action: "ACCEPT" | "REJECT") => {
+    if (!studentTenancy) return;
+    setConfirmActionLoading(true);
+    try {
+      const res = await fetch(`/api/tenancies/${studentTenancy.id}/confirm`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (action === "ACCEPT") {
+          setStudentTenancy({ ...studentTenancy, status: "ACTIVE" });
+        } else {
+          setStudentTenancy(null);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to confirm tenancy", err);
+    } finally {
+      setConfirmActionLoading(false);
+    }
+  };
 
   async function subscribe(area: string) {
     const trimmed = area.trim();
@@ -172,6 +209,75 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* ── Active Campus Residence / Tenancy Handshake ─────────────── */}
+          {isStudent && studentTenancy && (
+            <div className={`card p-6 bg-white border shadow-xs rounded-2xl ${
+              studentTenancy.status === "PENDING_CONFIRMATION" ? "border-amber-200 bg-amber-50/20" : "border-emerald-100"
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-[#1F6B4A]/10 text-[#1F6B4A]">
+                      Current Campus Residence
+                    </span>
+                    {studentTenancy.status === "PENDING_CONFIRMATION" && (
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                        Action Required: Confirmation Pending
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-poppins font-bold text-lg text-gray-900">
+                    {studentTenancy.property?.title}
+                    {studentTenancy.unitNumber ? ` (${studentTenancy.unitNumber})` : ""}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {studentTenancy.property?.area}, Mombasa · Landlord: {studentTenancy.partner?.companyName || studentTenancy.partner?.user?.name}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600 pt-2">
+                    <div>
+                      <span className="text-[10px] text-gray-400 uppercase font-medium block">Lease Duration</span>
+                      <span className="font-semibold">
+                        Until {new Date(studentTenancy.endDate).toLocaleDateString("en-KE", { year: "numeric", month: "short", day: "numeric" })}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-gray-400 uppercase font-medium block">Agreed Rent</span>
+                      <span className="font-semibold text-[#1F6B4A]">Ksh {studentTenancy.monthlyRent?.toLocaleString()}/mo</span>
+                    </div>
+                  </div>
+                </div>
+
+                {studentTenancy.status === "PENDING_CONFIRMATION" ? (
+                  <div className="flex items-center gap-2 self-start sm:self-center pt-2 sm:pt-0">
+                    <button
+                      onClick={() => handleTenancyConfirm("ACCEPT")}
+                      disabled={confirmActionLoading}
+                      className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                    >
+                      {confirmActionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                      Confirm Stay
+                    </button>
+                    <button
+                      onClick={() => handleTenancyConfirm("REJECT")}
+                      disabled={confirmActionLoading}
+                      className="px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 border border-gray-200"
+                    >
+                      Not My Room
+                    </button>
+                  </div>
+                ) : (
+                  <div className="self-start sm:self-center">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Verified Resident
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* ── Quick Actions ───────────────────────────────────────────── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

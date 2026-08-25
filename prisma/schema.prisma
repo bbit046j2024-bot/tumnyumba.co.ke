@@ -103,6 +103,27 @@ enum PayoutStatus {
   FAILED
 }
 
+enum TenancyType {
+  STUDENT
+  NON_STUDENT
+}
+
+enum TenancyPeriodType {
+  SEMESTER_1
+  SEMESTER_2
+  FULL_ACADEMIC_YEAR
+  CUSTOM
+}
+
+enum TenancyStatus {
+  PENDING_CONFIRMATION
+  ACTIVE
+  RENEWED
+  VACATED_RELISTED
+  VACATED_UNLISTED
+  CANCELLED
+}
+
 // ─── MODELS ───────────────────────────────────────────────────────────────────
 
 model User {
@@ -127,6 +148,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   bookings           Booking[]
   areaSubscriptions  AreaSubscription[]
+  tenancies          Tenancy[]                 @relation("StudentTenancies")
 
   @@map("users")
 }
@@ -173,6 +195,7 @@ model PartnerProfile {
   invoices        Invoice[]
   bookings        Booking[]
   bookingPayments BookingPayment[]
+  tenancies       Tenancy[]
 
   @@map("partner_profiles")
 }
@@ -212,6 +235,7 @@ model Property {
   images    PropertyImage[]
   leads     Lead[]
   savedBy   SavedProperty[]
+  tenancies Tenancy[]
 
   partner   PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
 
@@ -483,6 +507,46 @@ model AreaSubscription {
   @@unique([userId, area])
   @@index([area]) // fast lookup when a property in this area is verified
   @@map("area_subscriptions")
+}
+
+// ─── TENANCY & OCCUPANCY MANAGEMENT ──────────────────────────────────────────
+
+model Tenancy {
+  id               String            @id @default(cuid())
+  propertyId       String
+  partnerId        String            // PartnerProfile.id
+  
+  // Flexible Tenant Details (Minimal & Privacy-First)
+  tenantType       TenancyType       @default(STUDENT)
+  tenantName       String
+  tenantPhone      String
+  tenantEmail      String
+  studentId        String?           // Optional link to User.id if registered student
+  
+  unitNumber       String?           // e.g. "Room 3", "Door 2B"
+  periodType       TenancyPeriodType @default(SEMESTER_1)
+  startDate        DateTime
+  endDate          DateTime
+  monthlyRent      Int
+  depositPaid      Int               @default(0)
+  
+  status           TenancyStatus     @default(ACTIVE)
+  studentConfirmedAt DateTime?
+  lastReminderSentAt DateTime?
+  relistedAt       DateTime?
+
+  property         Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  partner          PartnerProfile    @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  student          User?             @relation("StudentTenancies", fields: [studentId], references: [id], onDelete: SetNull)
+
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([endDate, status])
+  @@index([partnerId])
+  @@index([studentId])
+  @@index([propertyId])
+  @@map("tenancies")
 }
 
 // ─── SYSTEM SETTINGS ──────────────────────────────────────────────────────────

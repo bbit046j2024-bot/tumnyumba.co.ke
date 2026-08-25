@@ -251,3 +251,136 @@ export async function sendAreaListingAlert(
 
   return res.data;
 }
+
+// ─── 7. Tenancy Confirmation Request (Student) ──────────────────────────────
+
+export async function sendTenancyConfirmationEmailToStudent(
+  to: string,
+  studentName: string,
+  landlordName: string,
+  propertyTitle: string,
+  unitNumber: string | null,
+  periodLabel: string,
+  endDateFormatted: string,
+  monthlyRent: number,
+  tenancyId: string
+) {
+  const confirmUrl = `${APP_URL}/notifications?tenancyId=${tenancyId}`;
+  const html = baseTemplate(`
+    ${heading("Confirm your Tenancy / Stay 🏠")}
+    ${para(`Hi <strong>${studentName}</strong>,`)}
+    ${para(`Landlord <strong>${landlordName}</strong> has recorded you as an active resident at:`)}
+    <div style="background:#f0fdf4;border-left:4px solid #1F6B4A;border-radius:8px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0;font-size:16px;font-weight:700;color:#111827;">${propertyTitle}${unitNumber ? ` (${unitNumber})` : ""}</p>
+      <p style="margin:6px 0 0;font-size:14px;color:#374151;"><strong>Period:</strong> ${periodLabel} (Until ${endDateFormatted})</p>
+      <p style="margin:4px 0 0;font-size:14px;color:#374151;"><strong>Agreed Rent:</strong> Ksh ${monthlyRent.toLocaleString()}/month</p>
+    </div>
+    ${para("Please confirm this tenancy to lock in your resident status and help keep listing availability accurate on CampusKey.")}
+    ${btn(confirmUrl, "Review & Confirm Tenancy")}
+    ${smallNote("If you did not book or move into this property, you can reject this request on your dashboard.")}
+  `);
+
+  const res = await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Confirm your tenancy at ${propertyTitle}`,
+    html,
+  });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
+}
+
+// ─── 8. Tenancy Expiry & Relist Reminder (Landlord) ─────────────────────────
+
+export async function sendTenancyExpiryReminderToLandlord(
+  to: string,
+  landlordName: string,
+  propertyTitle: string,
+  unitNumber: string | null,
+  tenantName: string,
+  endDateFormatted: string,
+  tenancyId: string,
+  propertyId: string,
+  isExpired: boolean
+) {
+  const relistUrl = `${APP_URL}/partner/tenancies?relist=${tenancyId}`;
+  const renewUrl = `${APP_URL}/partner/tenancies?renew=${tenancyId}`;
+
+  const html = baseTemplate(`
+    ${heading(isExpired ? "Semester/Lease Ended — Relist Property? 🔔" : "Upcoming Tenancy Expiry Reminder 🗓️")}
+    ${para(`Hi <strong>${landlordName}</strong>,`)}
+    ${para(
+      isExpired
+        ? `The tenancy for <strong>${tenantName}</strong> at <strong>${propertyTitle}${unitNumber ? ` (${unitNumber})` : ""}</strong> reached its end date on <strong>${endDateFormatted}</strong>.`
+        : `The tenancy for <strong>${tenantName}</strong> at <strong>${propertyTitle}${unitNumber ? ` (${unitNumber})` : ""}</strong> is scheduled to end on <strong>${endDateFormatted}</strong>.`
+    )}
+    <div style="background:#f0fdf4;border-left:4px solid #1F6B4A;border-radius:8px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0;font-size:15px;font-weight:700;color:#111827;">Has the student/tenant vacated, or are they staying for next semester?</p>
+    </div>
+    ${para("Take quick action to keep your property availability up to date:")}
+    <table cellpadding="0" cellspacing="0" style="margin:20px 0;">
+      <tr>
+        <td style="background:#1F6B4A;border-radius:10px;padding-right:12px;">
+          <a href="${relistUrl}" style="display:inline-block;padding:12px 24px;color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;">🟢 Student Left: Re-list as Available</a>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:12px 0 0;font-size:14px;">
+      Staying for next semester? <a href="${renewUrl}" style="color:#1F6B4A;font-weight:600;text-decoration:underline;">Click here to Renew Tenancy</a>
+    </p>
+    ${smallNote("Re-listing will instantly broadcast your vacancy to students who subscribed to alerts in your area.")}
+  `);
+
+  const res = await resend.emails.send({
+    from: FROM,
+    to,
+    subject: isExpired
+      ? `Action needed: Relist ${propertyTitle} (Tenancy Ended)`
+      : `Reminder: Tenancy ending soon for ${propertyTitle}`,
+    html,
+  });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
+}
+
+// ─── 9. Tenancy Audit Digest (Admin) ────────────────────────────────────────
+
+export async function sendTenancyExpiryDigestToAdmin(
+  to: string,
+  expiringCount: number,
+  unlistedCount: number
+) {
+  const adminUrl = `${APP_URL}/admin/tenancies`;
+  const html = baseTemplate(`
+    ${heading("Tenancy & Relisting Audit Digest 📊")}
+    ${para("Hello Admin, here is the campus accommodation tenancy audit summary for this cycle:")}
+    <div style="background:#f0fdf4;border-left:4px solid #1F6B4A;border-radius:8px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0 0 8px;font-size:15px;color:#111827;"><strong>${expiringCount}</strong> tenancies expiring this week.</p>
+      <p style="margin:0;font-size:15px;color:#b91c1c;"><strong>${unlistedCount}</strong> properties have ended tenancies and remain unlisted.</p>
+    </div>
+    ${para("Log in to the Admin Tenancies center to view landlord details and assist in relisting:")}
+    ${btn(adminUrl, "Open Admin Tenancies Dashboard")}
+  `);
+
+  const res = await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `CampusKey Audit: ${unlistedCount} unlisted properties / ${expiringCount} expiring tenancies`,
+    html,
+  });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
+}
+

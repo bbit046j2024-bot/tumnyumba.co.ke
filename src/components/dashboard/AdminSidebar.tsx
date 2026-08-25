@@ -7,12 +7,14 @@ import {
   LayoutDashboard, Home, Building2, Users, FileText,
   BarChart3, MessageSquare, Megaphone, Settings, LogOut,
   ChevronLeft, ChevronRight, Bell, TrendingUp, ShieldCheck,
+  KeyRound,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const navItems = [
   { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/properties", icon: Home, label: "Properties" },
+  { href: "/admin/tenancies", icon: KeyRound, label: "Tenancies & Expiry" },
   { href: "/admin/partners", icon: Building2, label: "Partners" },
   { href: "/admin/applications", icon: FileText, label: "Applications" },
   { href: "/admin/students", icon: Users, label: "Students" },

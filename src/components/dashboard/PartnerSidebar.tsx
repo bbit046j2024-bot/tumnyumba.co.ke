@@ -6,12 +6,14 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, PlusCircle, CalendarCheck, MessageSquare,
   TrendingUp, Bell, User, Settings, LogOut, ChevronLeft, ChevronRight,
+  KeyRound,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const navItems = [
   { href: "/partner/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/partner/properties", icon: Home, label: "My Properties" },
+  { href: "/partner/tenancies", icon: KeyRound, label: "Tenants & Occupancy" },
   { href: "/partner/properties/add", icon: PlusCircle, label: "Add Property" },
   { href: "/partner/bookings", icon: CalendarCheck, label: "Bookings" },
   { href: "/partner/chat", icon: MessageSquare, label: "Chat" },

@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, GraduationCap, Building2 } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -131,19 +131,48 @@ function LoginForm() {
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-          <p className="text-sm text-gray-500">
-            Don&apos;t have an account?{" "}
-            <Link href="/auth/register/student" className="text-primary-700 font-semibold hover:text-primary-900">
-              Register as Student
-            </Link>
+        <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide text-center">
+            New to CampusKey? Create an account
           </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Are you a property partner?{" "}
-            <Link href="/auth/register/partner" className="text-primary-700 font-semibold hover:text-primary-900">
-              Register here
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Student Registration Button */}
+            <Link
+              href="/auth/register/student"
+              className="flex items-center gap-3 p-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/70 hover:border-emerald-400 transition-all group"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#1F6B4A] text-white flex items-center justify-center flex-shrink-0">
+                <GraduationCap className="w-5 h-5" />
+              </div>
+              <div className="text-left min-w-0">
+                <span className="font-poppins font-bold text-xs text-gray-900 group-hover:text-[#1F6B4A] block truncate">
+                  Student Sign Up
+                </span>
+                <span className="text-[10px] text-gray-500 block leading-tight">
+                  Find student rooms
+                </span>
+              </div>
             </Link>
-          </p>
+
+            {/* Landlord / Agency Partner Registration Button */}
+            <Link
+              href="/auth/register/partner"
+              className="flex items-center gap-3 p-3 rounded-2xl border-2 border-purple-200 bg-purple-50/50 hover:bg-purple-100/70 hover:border-purple-400 transition-all group"
+            >
+              <div className="w-9 h-9 rounded-xl bg-purple-700 text-white flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div className="text-left min-w-0">
+                <span className="font-poppins font-bold text-xs text-gray-900 group-hover:text-purple-700 block truncate">
+                  Landlord / Agency
+                </span>
+                <span className="text-[10px] text-gray-500 block leading-tight">
+                  List properties
+                </span>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
 

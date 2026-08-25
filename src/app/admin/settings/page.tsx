@@ -9,6 +9,10 @@ export default function AdminSettingsPage() {
   const [supportEmail, setSupportEmail] = useState("campusdive.org@gmail.com");
   const [mpesaPaybill, setMpesaPaybill] = useState("400200");
   
+  const [semester1EndDate, setSemester1EndDate] = useState("2026-12-20");
+  const [semester2EndDate, setSemester2EndDate] = useState("2026-04-30");
+  const [academicYearEndDate, setAcademicYearEndDate] = useState("2026-07-31");
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -26,6 +30,9 @@ export default function AdminSettingsPage() {
           if (data.leadFee !== undefined) setLeadFee(String(data.leadFee));
           if (data.supportEmail) setSupportEmail(data.supportEmail);
           if (data.mpesaPaybill) setMpesaPaybill(data.mpesaPaybill);
+          if (data.semester1EndDate) setSemester1EndDate(data.semester1EndDate);
+          if (data.semester2EndDate) setSemester2EndDate(data.semester2EndDate);
+          if (data.academicYearEndDate) setAcademicYearEndDate(data.academicYearEndDate);
         }
       })
       .catch((err) => {
@@ -49,6 +56,9 @@ export default function AdminSettingsPage() {
           leadFee: Number(leadFee) || 50,
           supportEmail,
           mpesaPaybill,
+          semester1EndDate,
+          semester2EndDate,
+          academicYearEndDate,
         }),
       });
 
@@ -78,7 +88,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-6 max-w-4xl animate-fade-in pb-12">
       <div>
         <h1 className="page-title">Platform Settings</h1>
-        <p className="page-subtitle">Configure system options, features, lead generation fees, and integration parameters.</p>
+        <p className="page-subtitle">Configure system options, academic semester cycles, fees, and automated relisting parameters.</p>
       </div>
 
       {saved && (
@@ -95,6 +105,54 @@ export default function AdminSettingsPage() {
       )}
 
       <form onSubmit={handleSave} className="space-y-6">
+        {/* Academic Calendar & Tenancy Reminder Schedule */}
+        <div className="card p-6 space-y-4">
+          <h3 className="font-poppins font-bold text-base text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+            <Bell className="w-5 h-5 text-primary-700" /> Academic Calendar &amp; Tenancy Expiry Reminders
+          </h3>
+          <p className="text-xs text-gray-500">
+            Defines the default university semester end dates. The automated reminder worker uses these dates to send Landlords 1-click re-listing emails when students vacate.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+            <div>
+              <label className="input-label">Semester 1 End Date</label>
+              <input
+                type="date"
+                value={semester1EndDate}
+                onChange={(e) => setSemester1EndDate(e.target.value)}
+                className="input"
+                required
+              />
+              <span className="text-xs text-gray-400 mt-1 block">Usually mid-December.</span>
+            </div>
+
+            <div>
+              <label className="input-label">Semester 2 End Date</label>
+              <input
+                type="date"
+                value={semester2EndDate}
+                onChange={(e) => setSemester2EndDate(e.target.value)}
+                className="input"
+                required
+              />
+              <span className="text-xs text-gray-400 mt-1 block">Usually late April.</span>
+            </div>
+
+            <div>
+              <label className="input-label">Full Academic Year End</label>
+              <input
+                type="date"
+                value={academicYearEndDate}
+                onChange={(e) => setAcademicYearEndDate(e.target.value)}
+                className="input"
+                required
+              />
+              <span className="text-xs text-gray-400 mt-1 block">Usually late July.</span>
+            </div>
+          </div>
+        </div>
+
         {/* Feature Switches */}
         <div className="card p-6 space-y-4">
           <h3 className="font-poppins font-bold text-base text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
