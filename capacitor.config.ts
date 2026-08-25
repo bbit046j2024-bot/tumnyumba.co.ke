@@ -6,10 +6,21 @@ const config: CapacitorConfig = {
   // webDir is required by Capacitor CLI even when using server.url
   webDir: 'out',
   // In production the app loads from your live website
-  // so you don't need a static export — the WebView just navigates to the URL.
+  // We use www.campuskey.co.ke to load directly without 308 redirects
   server: {
-    url: 'https://campuskey.co.ke',
-    cleartext: false,
+    url: 'https://www.campuskey.co.ke',
+    errorPath: 'offline.html',
+    cleartext: true,
+    allowNavigation: [
+      'www.campuskey.co.ke',
+      'campuskey.co.ke',
+      '*.campuskey.co.ke',
+      'res.cloudinary.com',
+      '*.cloudinary.com',
+      '*.pusher.com',
+      '*.google.com',
+      '*.googleapis.com'
+    ],
   },
   android: {
     buildOptions: {
@@ -21,10 +32,10 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 2500,
+      launchAutoHide: true,        // ← this is what was missing — hides splash after duration
       backgroundColor: '#1F6B4A',
       showSpinner: false,
-      androidSpinnerStyle: 'small',
       splashFullScreen: true,
       splashImmersive: true,
     },

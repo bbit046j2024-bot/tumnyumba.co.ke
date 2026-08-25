@@ -126,6 +126,7 @@ model User {
   verificationTokens VerificationToken[]
   passwordResetTokens PasswordResetToken[]
   bookings           Booking[]
+  areaSubscriptions  AreaSubscription[]
 
   @@map("users")
 }
@@ -465,6 +466,23 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+}
+
+// ─── AREA SUBSCRIPTIONS ───────────────────────────────────────────────────────
+
+/// Students subscribe to area names (normalised lowercase).
+/// When a property in that area is verified, they receive an in-app + email alert.
+model AreaSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  area      String   @db.VarChar(100) // normalised lowercase, e.g. "tudor"
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, area])
+  @@index([area]) // fast lookup when a property in this area is verified
+  @@map("area_subscriptions")
 }
 
 // ─── SYSTEM SETTINGS ──────────────────────────────────────────────────────────

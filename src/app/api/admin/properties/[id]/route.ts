@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notifyAreaSubscribers } from "@/lib/notifyAreaSubscribers";
 
 export async function PATCH(
   req: NextRequest,
@@ -38,6 +39,20 @@ export async function PATCH(
         ...(typeof availableSpaces === "number" && { availableSpaces }),
       },
     });
+
+    // If the property just became VERIFIED, notify students watching this area
+    const wasAlreadyVerified = existing.verificationStatus === "VERIFIED";
+    const nowVerified = verificationStatus === "VERIFIED";
+    if (!wasAlreadyVerified && nowVerified) {
+      notifyAreaSubscribers({
+        id: updated.id,
+        title: updated.title,
+        area: updated.area,
+        rent: updated.rent,
+      }).catch((err) =>
+        console.warn("[area-subscription notification]", err)
+      );
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

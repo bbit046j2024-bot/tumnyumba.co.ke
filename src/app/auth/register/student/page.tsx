@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Home, User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import { Home, User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, BellRing, MapPin, ShieldCheck } from "lucide-react";
 
 export default function StudentRegisterPage() {
   const router = useRouter();
@@ -105,6 +105,29 @@ export default function StudentRegisterPage() {
               <div className="relative flex items-center">
                 <Lock className="absolute left-3.5 w-4 h-4 text-gray-400 pointer-events-none z-10" />
                 <input type="password" className="input pl-11" placeholder="Re-enter password" value={form.confirmPassword} onChange={(e) => update("confirmPassword", e.target.value)} required />
+              </div>
+            </div>
+
+            {/* Feature highlights */}
+            <div className="rounded-xl bg-[#f0fdf4] border border-[#1F6B4A]/15 px-4 py-3.5 space-y-2">
+              <p className="text-xs font-semibold text-[#1F6B4A] uppercase tracking-wide mb-1">What you get with your free account</p>
+              <div className="flex items-start gap-2.5">
+                <BellRing className="w-4 h-4 text-[#1F6B4A] mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-gray-700 leading-snug">
+                  <span className="font-semibold">New listing alerts</span> — subscribe to any area (Tudor, Nyali, Mshomoroni…) and get an email + in-app notification the moment a new property is verified there.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-[#1F6B4A] mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-gray-700 leading-snug">
+                  <span className="font-semibold">Verified listings only</span> — every property is reviewed by our team before it goes live.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-[#1F6B4A] mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-gray-700 leading-snug">
+                  <span className="font-semibold">Direct contact</span> — express interest and get the landlord's number instantly, no middlemen.
+                </p>
               </div>
             </div>
 

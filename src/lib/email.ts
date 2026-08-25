@@ -214,3 +214,40 @@ export async function sendBookingConfirmationToStudent(
 
   return res.data;
 }
+
+// ─── 6. Area Listing Alert (Student) ───────────────────────────────────────
+
+export async function sendAreaListingAlert(
+  to: string,
+  studentName: string,
+  area: string,
+  propertyTitle: string,
+  propertyId: string,
+  rent: number
+) {
+  const listingUrl = `${APP_URL}/listings/${propertyId}`;
+  const html = baseTemplate(`
+    ${heading(`New listing in ${area}! 🏠`)}
+    ${para(`Hi <strong>${studentName}</strong>, a new verified property just went live in an area you're watching:`)}
+    <div style="background:#f0fdf4;border-left:4px solid #1F6B4A;border-radius:8px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0;font-size:16px;font-weight:700;color:#111827;">${propertyTitle}</p>
+      <p style="margin:6px 0 0;font-size:14px;color:#6b7280;"><strong>${area}</strong> &nbsp;·&nbsp; Ksh ${rent.toLocaleString()}/month</p>
+    </div>
+    ${para("Be the first to express interest — spots go fast!")}
+    ${btn(listingUrl, "View Listing")}
+    ${smallNote(`You're receiving this because you subscribed to listing alerts for <strong>${area}</strong>. <a href="${APP_URL}/profile" style="color:#1F6B4A;">Manage your subscriptions</a>.`)}
+  `);
+
+  const res = await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `New listing in ${area} — ${propertyTitle}`,
+    html,
+  });
+
+  if (res.error) {
+    throw new Error(`Resend error (${res.error.name}): ${res.error.message}`);
+  }
+
+  return res.data;
+}
