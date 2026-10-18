@@ -76,6 +76,8 @@ export async function POST(req: NextRequest) {
         totalSpaces: body.totalSpaces ? parseInt(body.totalSpaces) : 1,
         availableSpaces: body.availableSpaces !== undefined ? parseInt(body.availableSpaces) : 1,
         leadFee: 0, // Defaults to 0 KES until specified by Admin
+        videoUrl: body.videoUrl || null,
+        videoPublicId: body.videoPublicId || null,
         wifi: body.amenities?.wifi || false,
         water: body.amenities?.water || false,
         electricity: body.amenities?.electricity || false,

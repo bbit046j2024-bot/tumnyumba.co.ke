@@ -35,12 +35,11 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     *  - /api/auth/* (NextAuth internal endpoints — must never be intercepted)
-     *  - /_next/* (Next.js internals / static assets)
-     *  - Files with an extension (e.g. favicon.ico, logo.png)
-     */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/admin",
+    "/admin/:path*",
+    "/partner",
+    "/partner/:path*",
+    "/dashboard",
+    "/dashboard/:path*",
   ],
 };

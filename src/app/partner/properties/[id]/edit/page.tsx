@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { containsPhone } from "@/lib/moderation";
+import VideoUpload from "@/components/video/VideoUpload";
 
 const MapPicker = dynamic(() => import("@/components/map/MapPicker"), {
   ssr: false,
@@ -58,6 +59,7 @@ export default function EditPropertyPage() {
   const [autoRelist, setAutoRelist] = useState(false);
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [video, setVideo] = useState<{ url: string; publicId: string } | null>(null);
 
   useEffect(() => {
     if (!propertyId) return;
@@ -101,6 +103,15 @@ export default function EditPropertyPage() {
               preview: img.url,
             }))
           );
+        }
+
+        if (data.videoUrl) {
+          setVideo({
+            url: data.videoUrl,
+            publicId: data.videoPublicId || "",
+          });
+        } else {
+          setVideo(null);
         }
       })
       .catch((err) => {
@@ -162,6 +173,8 @@ export default function EditPropertyPage() {
           contactPerson, contactPhone, totalSpaces, availableSpaces,
           description, availabilityStatus: availability, autoRelist, amenities,
           latitude, longitude, mapUrl,
+          videoUrl: video?.url || null,
+          videoPublicId: video?.publicId || null,
           images: images.map(({ url, publicId }) => ({ url, publicId })),
         }),
       });
@@ -434,6 +447,16 @@ export default function EditPropertyPage() {
               </label>
             )}
           </div>
+        </div>
+
+        {/* Video Walkthrough (ImageKit.io) */}
+        <div className="pt-2">
+          <VideoUpload
+            videoUrl={video?.url || null}
+            videoPublicId={video?.publicId || null}
+            onChange={setVideo}
+            disabled={submitting || uploading}
+          />
         </div>
 
         {/* Options */}

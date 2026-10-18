@@ -98,6 +98,8 @@ export async function PATCH(
     if (body.latitude !== undefined) updateData.latitude = body.latitude ? parseFloat(body.latitude) : null;
     if (body.longitude !== undefined) updateData.longitude = body.longitude ? parseFloat(body.longitude) : null;
     if (body.mapUrl !== undefined) updateData.mapUrl = body.mapUrl || null;
+    if (body.videoUrl !== undefined) updateData.videoUrl = body.videoUrl || null;
+    if (body.videoPublicId !== undefined) updateData.videoPublicId = body.videoPublicId || null;
 
     if (body.amenities) {
       updateData.wifi = !!body.amenities.wifi;

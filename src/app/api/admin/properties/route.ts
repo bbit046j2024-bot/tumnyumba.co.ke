@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         }),
       },
       include: {
-        images: { where: { isPrimary: true }, take: 1 },
+        images: { select: { id: true, url: true, isPrimary: true } },
         partner: {
           include: {
             user: { select: { name: true, email: true } },

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { containsPhone } from "@/lib/moderation";
+import VideoUpload from "@/components/video/VideoUpload";
 
 const MapPicker = dynamic(() => import("@/components/map/MapPicker"), { ssr: false, loading: () => <div className="h-56 w-full rounded-2xl bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-gray-400 text-sm"><Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading map...</div> });
 
@@ -48,6 +49,7 @@ export default function AddPropertyPage() {
 
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [video, setVideo] = useState<{ url: string; publicId: string } | null>(null);
 
   const toggleAmenity = (key: keyof typeof amenities) => {
     setAmenities((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -102,6 +104,8 @@ export default function AddPropertyPage() {
           contactPerson, contactPhone, totalSpaces, availableSpaces,
           description, availabilityStatus: availability, autoRelist, amenities,
           latitude, longitude, mapUrl,
+          videoUrl: video?.url || null,
+          videoPublicId: video?.publicId || null,
           images: images.map(({ url, publicId }) => ({ url, publicId })),
         }),
       });
@@ -370,6 +374,16 @@ export default function AddPropertyPage() {
               <ImageIcon className="w-3.5 h-3.5" /> Photos increase enquiries by 3x. Upload at least one.
             </p>
           )}
+        </div>
+
+        {/* Video Walkthrough (ImageKit.io) */}
+        <div className="pt-2">
+          <VideoUpload
+            videoUrl={video?.url || null}
+            videoPublicId={video?.publicId || null}
+            onChange={setVideo}
+            disabled={loading || uploading}
+          />
         </div>
 
         {/* Options */}

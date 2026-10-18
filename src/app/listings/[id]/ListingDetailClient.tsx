@@ -21,7 +21,7 @@ import PayButton from "@/components/payments/PayButton";
 import {
   MapPin, Bed, Wifi, Shield, CheckCircle2, Phone, MessageSquare, Mail,
   ArrowLeft, Share2, Heart, Loader2, Zap, Droplet, Car, Lock, Building,
-  CreditCard, Sparkles, X
+  CreditCard, Sparkles, X, Video, Play, Image as ImageIcon
 } from "lucide-react";
 
 interface PropertyDetail {
@@ -52,6 +52,8 @@ interface PropertyDetail {
   effectiveLeadFee?: number;
   totalSpaces?: number;
   availableSpaces?: number;
+  videoUrl?: string | null;
+  videoPublicId?: string | null;
   images: { id: string; url: string; isPrimary: boolean }[];
   hasLead?: boolean;
   enableDirectBooking?: boolean;
@@ -77,6 +79,7 @@ export default function ListingDetailClient() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [activeImage, setActiveImage] = useState<string>("");
+  const [mediaMode, setMediaMode] = useState<"PHOTO" | "VIDEO">("PHOTO");
   const [saved, setSaved] = useState(false);
   const [interestLoading, setInterestLoading] = useState(false);
   const [interestSubmitted, setInterestSubmitted] = useState(false);
@@ -285,15 +288,73 @@ export default function ListingDetailClient() {
           <div className="lg:col-span-2 space-y-8">
             {/* Gallery */}
             <div className="space-y-3">
-              <div className="relative h-[360px] sm:h-[450px] w-full rounded-2xl overflow-hidden bg-gray-100 shadow-md">
-                {activeImage ? (
-                  <Image src={activeImage} alt={property.title} fill priority sizes="(max-width: 768px) 100vw, 75vw" className="object-cover transition-all duration-300" />
+              {/* Media Switcher (if video exists) */}
+              {property.videoUrl && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMediaMode("PHOTO")}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      mediaMode === "PHOTO"
+                        ? "bg-primary-700 text-white shadow-sm"
+                        : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    <ImageIcon className="w-3.5 h-3.5" /> Photos ({property.images?.length || 0})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMediaMode("VIDEO")}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      mediaMode === "VIDEO"
+                        ? "bg-primary-700 text-white shadow-sm ring-2 ring-primary-500/20"
+                        : "bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100"
+                    }`}
+                  >
+                    <Video className="w-3.5 h-3.5 text-emerald-700" /> Watch Video Tour
+                  </button>
+                </div>
+              )}
+
+              {/* Main Showcase Viewport */}
+              <div className="relative h-[360px] sm:h-[450px] w-full rounded-2xl overflow-hidden bg-gray-950 shadow-md">
+                {mediaMode === "VIDEO" && property.videoUrl ? (
+                  <div className="w-full h-full bg-black flex items-center justify-center">
+                    <video
+                      src={property.videoUrl}
+                      controls
+                      autoPlay
+                      playsInline
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : activeImage ? (
+                  <>
+                    <Image
+                      src={activeImage}
+                      alt={property.title}
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, 75vw"
+                      className="object-cover transition-all duration-300"
+                    />
+                    {property.videoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setMediaMode("VIDEO")}
+                        className="absolute bottom-4 right-4 bg-black/75 hover:bg-black/90 text-white backdrop-blur-md px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all hover:scale-105"
+                      >
+                        <Play className="w-4 h-4 fill-emerald-400 text-emerald-400" /> Watch Video Tour
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
                     <Bed className="w-16 h-16 text-primary-400" />
                   </div>
                 )}
-                <div className="absolute top-4 left-4 flex gap-2">
+
+                <div className="absolute top-4 left-4 flex gap-2 pointer-events-none">
                   {property.verificationStatus === "VERIFIED" && (
                     <span className="bg-primary-700 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1 shadow-md">
                       <CheckCircle2 className="w-3.5 h-3.5" /> TUM Verified
@@ -305,10 +366,38 @@ export default function ListingDetailClient() {
                 </div>
               </div>
 
-              {property.images && property.images.length > 1 && (
+              {/* Thumbnails Row */}
+              {((property.images && property.images.length > 0) || property.videoUrl) && (
                 <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                  {property.images.map((img) => (
-                    <button key={img.id} onClick={() => setActiveImage(img.url)} className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${activeImage === img.url ? "border-primary-600 scale-95" : "border-transparent opacity-70 hover:opacity-100"}`}>
+                  {property.videoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setMediaMode("VIDEO")}
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all flex flex-col items-center justify-center bg-gray-900 text-white ${
+                        mediaMode === "VIDEO"
+                          ? "border-primary-600 scale-95 ring-2 ring-primary-500/30"
+                          : "border-transparent opacity-80 hover:opacity-100"
+                      }`}
+                    >
+                      <Play className="w-6 h-6 text-emerald-400 fill-emerald-400" />
+                      <span className="text-[10px] font-bold mt-1 uppercase tracking-wider text-gray-200">Video</span>
+                    </button>
+                  )}
+
+                  {property.images?.map((img) => (
+                    <button
+                      key={img.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveImage(img.url);
+                        setMediaMode("PHOTO");
+                      }}
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
+                        mediaMode === "PHOTO" && activeImage === img.url
+                          ? "border-primary-600 scale-95"
+                          : "border-transparent opacity-70 hover:opacity-100"
+                      }`}
+                    >
                       <Image src={img.url} alt="Thumbnail" fill sizes="80px" className="object-cover" />
                     </button>
                   ))}

@@ -225,6 +225,10 @@ model Property {
   totalSpaces        Int                @default(1)
   availableSpaces    Int                @default(1)
 
+  // Video walkthrough (ImageKit.io)
+  videoUrl           String?            @db.Text
+  videoPublicId      String?
+
   // Amenities
   wifi        Boolean @default(false)
   water       Boolean @default(false)

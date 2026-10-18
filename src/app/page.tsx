@@ -67,6 +67,7 @@ interface Property {
   category: string;
   featured: boolean;
   verificationStatus: string;
+  videoUrl?: string | null;
   images: { url: string; isPrimary: boolean }[];
   wifi: boolean;
   water: boolean;
@@ -284,6 +285,7 @@ export default function HomePage() {
                 verified={listing.verificationStatus === "VERIFIED"}
                 featured={listing.featured}
                 image={listing.images?.[0]?.url}
+                videoUrl={listing.videoUrl}
                 amenities={{
                   wifi: listing.wifi,
                   water: listing.water,

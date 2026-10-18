@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Bed, Wifi, Star, CheckCircle2 } from "lucide-react";
+import { MapPin, Bed, Wifi, Star, CheckCircle2, Video } from "lucide-react";
 
 interface PropertyCardProps {
   id: string;
@@ -10,6 +10,8 @@ interface PropertyCardProps {
   category: string;
   distance?: string;
   image?: string;
+  videoUrl?: string | null;
+  hasVideo?: boolean;
   amenities?: { wifi?: boolean; water?: boolean; parking?: boolean; security?: boolean };
   verified?: boolean;
   featured?: boolean;
@@ -34,11 +36,15 @@ export default function PropertyCard({
   category,
   distance,
   image,
+  videoUrl,
+  hasVideo,
   amenities,
   verified = false,
   featured = false,
   availableSpaces,
 }: PropertyCardProps) {
+  const showVideoBadge = hasVideo || !!videoUrl;
+
   return (
     <Link href={`/listings/${id}`}>
       <div className="card-hover magic-card group overflow-hidden h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_18px_rgba(31,107,74,0.12)] transition-all duration-300">
@@ -63,6 +69,11 @@ export default function PropertyCard({
             {featured && (
               <span className="bg-[#FDF1DE] text-[#D98A1F] text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs">
                 <Star className="w-3.5 h-3.5 fill-[#D98A1F]" /> Featured
+              </span>
+            )}
+            {showVideoBadge && (
+              <span className="bg-black/75 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs border border-white/20">
+                <Video className="w-3.5 h-3.5 text-emerald-400" /> Video Tour
               </span>
             )}
             {typeof availableSpaces === "number" && (
